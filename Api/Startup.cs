@@ -1,9 +1,11 @@
 using Application.Handlers.Blogs;
+using Application.Handlers.Tags;
 using Application.Interfaces;
 using Application.Services;
 using Core.Entities;
 using Core.Repositories;
 using Core.Repositories.Base;
+using EntityFrameworkCore.UseRowNumberForPaging;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Base;
@@ -35,11 +37,17 @@ namespace Api
 
             services.AddControllers();
 
+            
             services.AddDbContext<AcademicBlogContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-                    builder => builder.MigrationsAssembly(typeof(AcademicBlogContext).Assembly.FullName));
+                    builder =>
+                    {
+                        builder.MigrationsAssembly(typeof(AcademicBlogContext).Assembly.FullName);
+                        builder.UseRowNumberForPaging();
+                    });
             });
+
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<AcademicBlogContext>()
                 .AddDefaultTokenProviders();
@@ -47,11 +55,15 @@ namespace Api
 
             services.AddAutoMapper(typeof(Startup));
             services.AddMediatR(typeof(CreateBlogHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(CreateTagHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(EditTagHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(DeleteTagHandler).GetTypeInfo().Assembly);
 
             services.AddTransient<IUploadService, FirebaseUploadService>();
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IBlogRepository, BlogRepository>();
+            services.AddScoped<ITagRepository, TagRepository>();
 
 
             services.AddSwaggerGen(c =>

@@ -39,9 +39,11 @@ namespace Infrastructure.Repositories.Base
         public async Task<T> GetByIdAsync(int id)
             => await _context.Set<T>().FindAsync(id);
 
-        public Task<T> UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
-            throw new NotImplementedException();
+            _context.Set<T>().Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }

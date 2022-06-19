@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace Application.Commands
+namespace Application.Commands.Blogs
 {
     public class CreateBlogCommand : IRequest<Response<BlogResponse>>
     {

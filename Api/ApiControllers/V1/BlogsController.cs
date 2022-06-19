@@ -1,5 +1,7 @@
 ﻿using Application.Commands;
+using Application.Commands.Blogs;
 using Application.Queries;
+using Application.Queries.Blogs;
 using Application.Response;
 using Application.Response.Base;
 using Microsoft.AspNetCore.Http;
@@ -36,9 +38,23 @@ namespace Api.ApiControllers.V1
 
         // GET api/Blogs/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            try
+            {
+                GetBlogWithIdCommand command = new GetBlogWithIdCommand();
+                command.BlogId = id;
+                var result = await Mediator.Send(command);
+                return StatusCode((int)result.StatusCode, result);
+            }
+            catch (Exception ex)
+            {
+                var response = new Response<BlogResponse>(ex.Message);
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return StatusCode((int)response.StatusCode, response);
+            }
+            //return "value";
         }
 
         // POST api/Blogs

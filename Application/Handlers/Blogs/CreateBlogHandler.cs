@@ -1,4 +1,4 @@
-﻿using Application.Commands;
+﻿using Application.Commands.Blogs;
 using Application.Interfaces;
 using Application.Mappers;
 using Application.Response;
