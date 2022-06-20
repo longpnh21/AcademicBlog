@@ -1,5 +1,6 @@
 ﻿using Application.Commands.Tags;
 using Application.Mappers;
+using Application.Queries.Tags;
 using Application.Response;
 using Application.Response.Base;
 using Core.Repositories;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Application.Handlers.Tags
 {
-    public class GetTagWithIdHandler : IRequestHandler<GetTagWithIdCommand, Response<TagResponse>>
+    public class GetTagWithIdHandler : IRequestHandler<GetTagWithIdQuery, Response<TagResponse>>
     {
         private readonly ITagRepository _tagRepository;
 
@@ -24,13 +25,13 @@ namespace Application.Handlers.Tags
 
         }
 
-        public async Task<Response<TagResponse>> Handle(GetTagWithIdCommand command, CancellationToken cancellationToken)
+        public async Task<Response<TagResponse>> Handle(GetTagWithIdQuery query, CancellationToken cancellationToken)
         {
             var response = new Response<TagResponse>();
 
             try
             {
-                var result = await _tagRepository.GetByIdAsync(command.TagId);
+                var result = await _tagRepository.GetByIdAsync(query.TagId);
                 var mappedResult = new TagResponse();
                 mappedResult = AcademicBlogMapper.Mapper.Map<TagResponse>(result);
                 response = new Response<TagResponse>(mappedResult)

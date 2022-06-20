@@ -26,10 +26,8 @@ namespace Application.Handlers.Tags
 
         public async Task<Response<TagResponse>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
         {
-            Console.WriteLine(request);
             var entity = AcademicBlogMapper.Mapper.Map<Tag>(request);
             var response = new Response<TagResponse>();
-            Console.WriteLine(entity);
             try
             {
                 if (entity is null)

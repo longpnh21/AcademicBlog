@@ -43,9 +43,15 @@ namespace Api.ApiControllers.V1
         {
             try
             {
-                GetTagWithIdCommand command = new GetTagWithIdCommand();
-                command.TagId = id;
-                var result = await Mediator.Send(command);
+                if (id < 0)
+                {
+                    return BadRequest();
+                }
+                GetTagWithIdQuery query = new GetTagWithIdQuery()
+                {
+                    TagId = id
+                };
+                var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
@@ -54,7 +60,6 @@ namespace Api.ApiControllers.V1
                 response.StatusCode = HttpStatusCode.InternalServerError;
                 return StatusCode((int)response.StatusCode, response);
             }
-            //return "value";
         }
 
         // POST api/Tags

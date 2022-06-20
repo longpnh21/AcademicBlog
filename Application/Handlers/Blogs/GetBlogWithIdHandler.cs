@@ -1,6 +1,7 @@
 ﻿using Application.Commands.Blogs;
 using Application.Mappers;
 using Application.Queries;
+using Application.Queries.Blogs;
 using Application.Response;
 using Application.Response.Base;
 using Core.Repositories;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace Application.Handlers.Blogs
 {
-    public class GetBlogWithIdHandler : IRequestHandler<GetBlogWithIdCommand, Response<BlogResponse>>
+    public class GetBlogWithIdHandler : IRequestHandler<GetBlogWithIdQuery, Response<BlogResponse>>
     {
         private readonly IBlogRepository _blogRepository;
 
@@ -25,13 +26,13 @@ namespace Application.Handlers.Blogs
 
         }
 
-        public async Task<Response<BlogResponse>> Handle(GetBlogWithIdCommand command, CancellationToken cancellationToken)
+        public async Task<Response<BlogResponse>> Handle(GetBlogWithIdQuery query, CancellationToken cancellationToken)
         {
             var response = new Response<BlogResponse>();
 
             try
             {
-                var result = await _blogRepository.GetByIdAsync(command.BlogId);
+                var result = await _blogRepository.GetByIdAsync(query.BlogId);
                 var mappedResult = new BlogResponse();
                 mappedResult = AcademicBlogMapper.Mapper.Map<BlogResponse>(result);
                 response = new Response<BlogResponse>(mappedResult)

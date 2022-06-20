@@ -30,14 +30,8 @@ namespace Application.Handlers.Tags
             try
             {
                 var result = await _tagRepository.GetByIdAsync(request.TagId);
-                var entity = AcademicBlogMapper.Mapper.Map<Tag>(result);
-                if (entity is null)
-                {
-                    throw new ApplicationException("Issue with mapper");
-                }
-                Console.WriteLine(entity);
 
-                await _tagRepository.DeleteAsync(entity);
+                await _tagRepository.DeleteAsync(result);
                 response = new Response<TagResponse>() {
                     StatusCode = HttpStatusCode.OK
                 };
