@@ -1,5 +1,6 @@
 using Application.Handlers.Blogs;
 using Application.Handlers.Tags;
+using Application.Handlers.Categories;
 using Application.Interfaces;
 using Application.Services;
 using Core.Entities;
@@ -58,12 +59,16 @@ namespace Api
             services.AddMediatR(typeof(CreateTagHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(EditTagHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(DeleteTagHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(CreateCategoryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(EditCategoryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(DeleteCategoryHandler).GetTypeInfo().Assembly);
 
             services.AddTransient<IUploadService, FirebaseUploadService>();
 
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 
             services.AddSwaggerGen(c =>

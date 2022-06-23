@@ -1,27 +1,27 @@
 ﻿using Application.Commands;
-using Application.Commands.Blogs;
+using Application.Commands.Categories;
 using Application.Queries;
-using Application.Queries.Blogs;
+using Application.Queries.Categories;
 using Application.Response;
 using Application.Response.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Api.ApiControllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    public class BlogsController : ApiControllerBase
+    public class CategoriesController : ApiControllerBase
     {
-        // GET: api/Blogs
+        // GET: api/Categorys
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get([FromQuery] GetBlogWithPaginationQuery query)
+        public async Task<IActionResult> Get([FromQuery] GetCategoryWithPaginationQuery query)
         {
             try
             {
@@ -30,13 +30,13 @@ namespace Api.ApiControllers.V1
             }
             catch (Exception ex)
             {
-                var response = new Response<BlogResponse>(ex.Message);
+                var response = new Response<CategoryResponse>(ex.Message);
                 response.StatusCode = HttpStatusCode.InternalServerError;
                 return StatusCode((int)response.StatusCode, response);
             }
         }
 
-        // GET api/Blogs/5
+        // GET api/Categorys/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Get(int id)
@@ -47,25 +47,25 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
-                GetBlogWithIdQuery query = new GetBlogWithIdQuery()
+                GetCategoryWithIdQuery query = new GetCategoryWithIdQuery()
                 {
-                    BlogId = id
+                    CategoryId = id
                 };
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<BlogResponse>(ex.Message);
+                var response = new Response<CategoryResponse>(ex.Message);
                 response.StatusCode = HttpStatusCode.InternalServerError;
                 return StatusCode((int)response.StatusCode, response);
             }
         }
 
-        // POST api/Blogs
+        // POST api/Categorys
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Post([FromBody] CreateBlogCommand command)
+        public async Task<IActionResult> Post([FromBody] CreateCategoryCommand command)
         {
             try
             {
@@ -74,36 +74,49 @@ namespace Api.ApiControllers.V1
             }
             catch (Exception ex)
             {
-                var response = new Response<BlogResponse>(ex.Message);
+                var response = new Response<CategoryResponse>(ex.Message);
                 response.StatusCode = HttpStatusCode.InternalServerError;
                 return StatusCode((int)response.StatusCode, response);
             }
         }
 
-        // PUT api/Blogs/5
+        // PUT api/Categorys/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/Blogs/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
-
-        // PUT api/Tags/5
-        [HttpPut("Approve")]
-        public async Task<IActionResult> ApproveBlog([FromBody] ApproveBlogCommand command)
+        public async Task<IActionResult> Put(int id, [FromBody] EditCategoryCommand command)
         {
             try
             {
+                if (id != command.Id)
+                {
+                    var response = new Response<CategoryResponse>("The Id do not match");
+                    response.StatusCode = HttpStatusCode.BadRequest;
+                    return StatusCode((int)response.StatusCode, response);
+                }
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<TagResponse>(ex.Message);
+                var response = new Response<CategoryResponse>(ex.Message);
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return StatusCode((int)response.StatusCode, response);
+            }
+        }
+
+        // DELETE api/Categorys/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                DeleteCategoryCommand command = new DeleteCategoryCommand();
+                command.CategoryId = id;
+                var result = await Mediator.Send(command);
+                return StatusCode((int)result.StatusCode, result);
+            }
+            catch (Exception ex)
+            {
+                var response = new Response<CategoryResponse>(ex.Message);
                 response.StatusCode = HttpStatusCode.InternalServerError;
                 return StatusCode((int)response.StatusCode, response);
             }

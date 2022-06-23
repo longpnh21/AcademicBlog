@@ -12,6 +12,7 @@ namespace Application.Mappers
                 cfg.ShouldMapProperty = p => p.GetMethod.IsPublic || p.GetMethod.IsAssembly;
                 cfg.AddProfile<BlogMappingProfile>();
                 cfg.AddProfile<TagMappingProfile>();
+                cfg.AddProfile<CategoryMappingProfile>();
             });
 
             var mapper = config.CreateMapper();
