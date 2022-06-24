@@ -13,6 +13,7 @@ namespace Application.Mappers
                 cfg.AddProfile<BlogMappingProfile>();
                 cfg.AddProfile<TagMappingProfile>();
                 cfg.AddProfile<CategoryMappingProfile>();
+                cfg.AddProfile<UserMappingProfile>();
             });
 
             var mapper = config.CreateMapper();

@@ -62,6 +62,7 @@ namespace Api
             services.AddMediatR(typeof(CreateCategoryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(EditCategoryHandler).GetTypeInfo().Assembly);
             services.AddMediatR(typeof(DeleteCategoryHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(CreateUserHandler).GetTypeInfo().Assembly);
 
             services.AddTransient<IUploadService, FirebaseUploadService>();
 
@@ -69,7 +70,7 @@ namespace Api
             services.AddScoped<IBlogRepository, BlogRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
-
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddSwaggerGen(c =>
             {

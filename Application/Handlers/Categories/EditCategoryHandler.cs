@@ -34,7 +34,6 @@ namespace Application.Handlers.Categories
                 {
                     throw new ApplicationException("Issue with mapper");
                 }
-                Console.WriteLine(entity);
 
                 var newCategory = await _CategoryRepository.UpdateAsync(entity);
                 response = new Response<CategoryResponse>(AcademicBlogMapper.Mapper.Map<CategoryResponse>(newCategory))

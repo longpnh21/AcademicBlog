@@ -34,7 +34,6 @@ namespace Application.Handlers.Tags
                 {
                     throw new ApplicationException("Issue with mapper");
                 }
-                Console.WriteLine(entity);
 
                 var newTag = await _tagRepository.UpdateAsync(entity);
                 response = new Response<TagResponse>(AcademicBlogMapper.Mapper.Map<TagResponse>(newTag))
