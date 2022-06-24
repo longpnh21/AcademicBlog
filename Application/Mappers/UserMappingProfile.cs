@@ -17,10 +17,12 @@ namespace Application.Mappers
         public UserMappingProfile()
         {
             CreateMap<User, UserResponse>()
-                .ForMember(dest => dest.Email, act => act.Ignore())
                 .ReverseMap();
 
-            CreateMap<CreateUserCommand, User>()
+            CreateMap<CreateStudentCommand, User>()
+                .ReverseMap();
+
+            CreateMap<CreateMentorCommand, User>()
                 .ReverseMap();
         }
     }

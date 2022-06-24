@@ -36,9 +36,27 @@ namespace Api.ApiControllers.V1
         }
 
         // POST api/Users
-        [HttpPost]
+        [HttpPost("Student")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
+        public async Task<IActionResult> PostStudent([FromBody] CreateStudentCommand command)
+        {
+            try
+            {
+                var result = await Mediator.Send(command);
+                return StatusCode((int)result.StatusCode, result);
+            }
+            catch (Exception ex)
+            {
+                var response = new Response<UserResponse>(ex.Message);
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                return StatusCode((int)response.StatusCode, response);
+            }
+        }
+
+        // POST api/Mentor
+        [HttpPost("Mentor")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        public async Task<IActionResult> PostMentor([FromBody] CreateMentorCommand command)
         {
             try
             {

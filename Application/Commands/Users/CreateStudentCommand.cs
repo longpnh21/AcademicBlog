@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Commands.Users
 {
-    public class CreateUserCommand : IRequest<Response<UserResponse>>
+    public class CreateStudentCommand : IRequest<Response<UserResponse>>
     {
         [Required]
         public string FullName { get; set; }

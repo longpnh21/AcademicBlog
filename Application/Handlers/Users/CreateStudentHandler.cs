@@ -16,18 +16,18 @@ using System.Threading.Tasks;
 
 namespace Application.Handlers.Categories
 {
-    public class CreateUserHandler : IRequestHandler<CreateUserCommand, Response<UserResponse>>
+    public class CreateStudentHandler : IRequestHandler<CreateStudentCommand, Response<UserResponse>>
     {
         private readonly IUserRepository _UserRepository;
         private UserManager<User> _UserManager;
 
-        public CreateUserHandler(IUserRepository UserRepository, UserManager<User> UserManager)
+        public CreateStudentHandler(IUserRepository UserRepository, UserManager<User> UserManager)
         {
             _UserRepository = UserRepository;
             _UserManager = UserManager;
         }
 
-        public async Task<Response<UserResponse>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Response<UserResponse>> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
         {
             var response = new Response<UserResponse>();
             try
