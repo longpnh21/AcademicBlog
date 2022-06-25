@@ -58,20 +58,6 @@ namespace Api
 
             //Blog
             services.AddMediatR(typeof(CreateBlogHandler).GetTypeInfo().Assembly);
-            
-            //Tag
-            services.AddMediatR(typeof(CreateTagHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(EditTagHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteTagHandler).GetTypeInfo().Assembly);
-            
-            //Category
-            services.AddMediatR(typeof(CreateCategoryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(EditCategoryHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(DeleteCategoryHandler).GetTypeInfo().Assembly);
-            
-            //User
-            services.AddMediatR(typeof(CreateStudentHandler).GetTypeInfo().Assembly);
-            services.AddMediatR(typeof(CreateMentorHandler).GetTypeInfo().Assembly);
 
             //Service
             services.AddTransient<IUploadService, FirebaseUploadService>();

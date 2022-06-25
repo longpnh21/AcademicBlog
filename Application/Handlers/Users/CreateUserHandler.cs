@@ -16,31 +16,36 @@ using System.Threading.Tasks;
 
 namespace Application.Handlers.Categories
 {
-    public class CreateStudentHandler : IRequestHandler<CreateStudentCommand, Response<UserResponse>>
+    public class CreateUserHandler : IRequestHandler<CreateUserCommand, Response<UserResponse>>
     {
         private readonly IUserRepository _UserRepository;
         private UserManager<User> _UserManager;
 
-        public CreateStudentHandler(IUserRepository UserRepository, UserManager<User> UserManager)
+        public CreateUserHandler(IUserRepository UserRepository, UserManager<User> UserManager)
         {
             _UserRepository = UserRepository;
             _UserManager = UserManager;
         }
 
-        public async Task<Response<UserResponse>> Handle(CreateStudentCommand request, CancellationToken cancellationToken)
+        public async Task<Response<UserResponse>> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
             var response = new Response<UserResponse>();
             try
             {
-                var student = new User() { UserName = request.Email, Email = request.Email, FullName = request.FullName };
-                var studentRole = new IdentityRole("Student");
-
-                if (_UserManager.Users.All(u => u.UserName != student.UserName))
+                if (request.Role != "Student" && request.Role != "Mentor")
                 {
-                    var result = await _UserManager.CreateAsync(student, request.Password);
-                    await _UserManager.AddToRolesAsync(student, new[] { studentRole.Name });
+                    response.StatusCode = HttpStatusCode.BadRequest;
+
                 }
-                response = new Response<UserResponse>(AcademicBlogMapper.Mapper.Map<UserResponse>(student));
+                var User = new User() { UserName = request.Email, Email = request.Email, FullName = request.FullName };
+                var UserRole = new IdentityRole(request.Role);
+
+                if (_UserManager.Users.All(u => u.UserName != User.UserName))
+                {
+                    var result = await _UserManager.CreateAsync(User, request.Password);
+                    await _UserManager.AddToRolesAsync(User, new[] { UserRole.Name });
+                }
+                response = new Response<UserResponse>(AcademicBlogMapper.Mapper.Map<UserResponse>(User));
 
             }
             catch (ApplicationException ex)
