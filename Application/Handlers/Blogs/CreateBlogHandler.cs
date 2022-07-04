@@ -17,7 +17,7 @@ namespace Application.Handlers.Blogs
     public class CreateBlogHandler : IRequestHandler<CreateBlogCommand, Response<BlogResponse>>
     {
         private readonly IBlogRepository _blogRepository;
-        private IUploadService _uploadService;
+        private readonly IUploadService _uploadService;
 
         public CreateBlogHandler(IBlogRepository blogRepository, IUploadService uploadService)
         {
@@ -39,7 +39,7 @@ namespace Application.Handlers.Blogs
 
                 foreach (var media in request.Media)
                 {
-                    var link = await _uploadService.UploadFileAsync(media);
+                    string link = await _uploadService.UploadFileAsync(media);
                     if (link is not null)
                     {
                         entity.Media.Add(new Media() { Link = link });
@@ -49,18 +49,25 @@ namespace Application.Handlers.Blogs
                 entity.Status = BlogStatus.Pending;
 
                 var newBlog = await _blogRepository.AddAsync(entity);
-                response = new Response<BlogResponse>(AcademicBlogMapper.Mapper.Map<BlogResponse>(newBlog));
+                response = new Response<BlogResponse>(AcademicBlogMapper.Mapper.Map<BlogResponse>(newBlog))
+                {
+                    StatusCode = HttpStatusCode.Created
+                };
 
             }
             catch (ApplicationException ex)
             {
-                response = new Response<BlogResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.UnprocessableEntity;
+                response = new Response<BlogResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.UnprocessableEntity
+                };
             }
             catch (Exception ex)
             {
-                response = new Response<BlogResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                response = new Response<BlogResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
             }
 
             return response;

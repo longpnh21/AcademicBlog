@@ -3,13 +3,11 @@ using Application.Queries.Users;
 using Application.Response;
 using Application.Response.Base;
 using Core.Common;
+using Core.Entities;
 using Core.Repositories;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,8 +34,7 @@ namespace Application.Handlers.Users
                 }
 
                 var result = await _UserRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize);
-
-                var mappedResult = new PaginatedList<UserResponse>(result.Select(e => AcademicBlogMapper.Mapper.Map<UserResponse>(e)), request.PageIndex, request.PageSize);
+                var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<User>, PaginatedList<UserResponse>>(result);
                 response = new Response<PaginatedList<UserResponse>>(mappedResult)
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -53,8 +50,10 @@ namespace Application.Handlers.Users
             }
             catch (Exception ex)
             {
-                response = new Response<PaginatedList<UserResponse>>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                response = new Response<PaginatedList<UserResponse>>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
             }
 
             return response;

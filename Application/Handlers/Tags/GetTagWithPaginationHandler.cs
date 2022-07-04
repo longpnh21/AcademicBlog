@@ -3,13 +3,11 @@ using Application.Queries.Tags;
 using Application.Response;
 using Application.Response.Base;
 using Core.Common;
+using Core.Entities;
 using Core.Repositories;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,7 +34,7 @@ namespace Application.Handlers.Tags
                     throw new ArgumentException("Invalid request");
                 }
                 var result = await _tagRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize);
-                var mappedResult = new PaginatedList<TagResponse>(result.Select(e => AcademicBlogMapper.Mapper.Map<TagResponse>(e)), request.PageIndex, request.PageSize);
+                var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Tag>, PaginatedList<TagResponse>>(result);
                 response = new Response<PaginatedList<TagResponse>>(mappedResult)
                 {
                     StatusCode = HttpStatusCode.OK,
@@ -52,8 +50,10 @@ namespace Application.Handlers.Tags
             }
             catch (Exception ex)
             {
-                response = new Response<PaginatedList<TagResponse>>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                response = new Response<PaginatedList<TagResponse>>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
             }
 
             return response;

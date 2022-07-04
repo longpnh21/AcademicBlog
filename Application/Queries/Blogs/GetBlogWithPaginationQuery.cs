@@ -7,7 +7,7 @@ namespace Application.Queries.Blogs
 {
     public class GetBlogWithPaginationQuery : IRequest<Response<PaginatedList<BlogResponse>>>
     {
-        public int PageIndex { get; set; }
-        public int PageSize { get; set; }
+        public int PageIndex { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
     }
 }

@@ -1,14 +1,10 @@
-﻿using Application.Commands;
-using Application.Commands.Categories;
-using Application.Queries;
+﻿using Application.Commands.Categories;
 using Application.Queries.Categories;
 using Application.Response;
 using Application.Response.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -25,13 +21,19 @@ namespace Api.ApiControllers.V1
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<CategoryResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<CategoryResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
@@ -47,7 +49,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
-                GetCategoryWithIdQuery query = new GetCategoryWithIdQuery()
+                var query = new GetCategoryWithIdQuery()
                 {
                     CategoryId = id
                 };
@@ -56,8 +58,10 @@ namespace Api.ApiControllers.V1
             }
             catch (Exception ex)
             {
-                var response = new Response<CategoryResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<CategoryResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
@@ -69,13 +73,19 @@ namespace Api.ApiControllers.V1
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<CategoryResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<CategoryResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
@@ -86,10 +96,16 @@ namespace Api.ApiControllers.V1
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
                 if (id != command.Id)
                 {
-                    var response = new Response<CategoryResponse>("The Id do not match");
-                    response.StatusCode = HttpStatusCode.BadRequest;
+                    var response = new Response<CategoryResponse>("The Id do not match")
+                    {
+                        StatusCode = HttpStatusCode.BadRequest
+                    };
                     return StatusCode((int)response.StatusCode, response);
                 }
                 var result = await Mediator.Send(command);
@@ -97,8 +113,10 @@ namespace Api.ApiControllers.V1
             }
             catch (Exception ex)
             {
-                var response = new Response<CategoryResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<CategoryResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
@@ -109,15 +127,23 @@ namespace Api.ApiControllers.V1
         {
             try
             {
-                DeleteCategoryCommand command = new DeleteCategoryCommand();
-                command.CategoryId = id;
+                if (id < 0)
+                {
+                    return BadRequest();
+                }
+                var command = new DeleteCategoryCommand()
+                {
+                    CategoryId = id
+                };
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<CategoryResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<CategoryResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }

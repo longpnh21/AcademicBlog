@@ -11,6 +11,7 @@ namespace Application.Commands.Blogs
     {
         [Required]
         public string Content { get; set; }
+        public string CreatorId { get; set; }
         public IList<IFormFile> Media { get; set; }
     }
 }

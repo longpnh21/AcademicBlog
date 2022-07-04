@@ -1,5 +1,4 @@
-﻿using Application.Commands;
-using Application.Commands.Blogs;
+﻿using Application.Commands.Blogs;
 using Application.Response;
 using AutoMapper;
 using Core.Entities;
@@ -13,8 +12,10 @@ namespace Application.Mappers
             CreateMap<Blog, BlogResponse>().ReverseMap();
 
             CreateMap<CreateBlogCommand, Blog>()
-                .ForMember(entity => entity.Media, opt => opt.Ignore())
-                .ReverseMap();
+                .ForMember(entity => entity.Media, opt => opt.Ignore());
+
+            CreateMap<EditBlogCommand, Blog>()
+                .ForMember(entity => entity.Media, opt => opt.Ignore());
         }
     }
 }

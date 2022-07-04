@@ -7,14 +7,14 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.Services
+namespace Api.Services
 {
     public class FirebaseUploadService : IUploadService
     {
-        private const string API_KEY = "";
-        private const string BUCKET = "";
-        private const string AUTH_EMAIL = "";
-        private const string AUTH_PASSWORD = "";
+        private const string API_KEY = "AIzaSyAYMQIuzDvhH0snG9fog2vhYrcm3oduB3g";
+        private const string BUCKET = "academicblog-cb0c8.appspot.com";
+        private const string AUTH_EMAIL = "administrator@academicblog.com";
+        private const string AUTH_PASSWORD = "~d[3f6mz)yxx'D=y";
 
         public async Task<string> UploadFileAsync(IFormFile file, string folder = "files")
         {

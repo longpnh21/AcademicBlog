@@ -1,14 +1,10 @@
-﻿using Application.Commands;
-using Application.Commands.Tags;
-using Application.Queries;
+﻿using Application.Commands.Tags;
 using Application.Queries.Tags;
 using Application.Response;
 using Application.Response.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -25,13 +21,19 @@ namespace Api.ApiControllers.V1
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<TagResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<TagResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
@@ -47,7 +49,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
-                GetTagWithIdQuery query = new GetTagWithIdQuery()
+                var query = new GetTagWithIdQuery()
                 {
                     TagId = id
                 };
@@ -56,8 +58,10 @@ namespace Api.ApiControllers.V1
             }
             catch (Exception ex)
             {
-                var response = new Response<TagResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<TagResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
@@ -69,13 +73,19 @@ namespace Api.ApiControllers.V1
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<TagResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<TagResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
@@ -86,10 +96,16 @@ namespace Api.ApiControllers.V1
         {
             try
             {
-                if(id != command.Id)
+                if (!ModelState.IsValid)
                 {
-                    var response = new Response<TagResponse>("The Id do not match");
-                    response.StatusCode = HttpStatusCode.BadRequest;
+                    return BadRequest();
+                }
+                if (id != command.Id)
+                {
+                    var response = new Response<TagResponse>("The Id do not match")
+                    {
+                        StatusCode = HttpStatusCode.BadRequest
+                    };
                     return StatusCode((int)response.StatusCode, response);
                 }
                 var result = await Mediator.Send(command);
@@ -97,8 +113,10 @@ namespace Api.ApiControllers.V1
             }
             catch (Exception ex)
             {
-                var response = new Response<TagResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<TagResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
@@ -109,15 +127,23 @@ namespace Api.ApiControllers.V1
         {
             try
             {
-                DeleteTagCommand command = new DeleteTagCommand();
-                command.TagId = id;
+                if (id < 0)
+                {
+                    return BadRequest();
+                }
+                var command = new DeleteTagCommand
+                {
+                    TagId = id
+                };
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<TagResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<TagResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
