@@ -46,7 +46,7 @@ namespace Api
             services.AddControllers();
 
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-            string secretKey = Configuration["AppSettings:SecretKey"];
+            string secretKey = Configuration["AppSettings:Secret"];
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>
@@ -77,9 +77,12 @@ namespace Api
                     });
             });
 
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentityCore<User>()
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<AcademicBlogContext>()
+                .AddSignInManager()
                 .AddDefaultTokenProviders();
+
             services.AddScoped<AcademicBlogContext>();
 
             services.AddAutoMapper(typeof(Startup));

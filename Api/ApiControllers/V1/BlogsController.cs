@@ -3,6 +3,7 @@ using Application.Queries.Blogs;
 using Application.Response;
 using Application.Response.Base;
 using Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace Api.ApiControllers.V1
 {
+    [Authorize]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class BlogsController : ApiControllerBase
