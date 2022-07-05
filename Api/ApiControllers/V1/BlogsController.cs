@@ -3,7 +3,6 @@ using Application.Queries.Blogs;
 using Application.Response;
 using Application.Response.Base;
 using Core.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +16,6 @@ namespace Api.ApiControllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    [Authorize]
     public class BlogsController : ApiControllerBase
     {
         private readonly UserManager<User> _userManager;
