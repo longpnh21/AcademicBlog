@@ -27,7 +27,7 @@ namespace Api.Middlewares
         {
             string token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
-            if (token != null)
+            if (token is not null)
             {
                 AttachUserToContext(context, userManager, token);
             }

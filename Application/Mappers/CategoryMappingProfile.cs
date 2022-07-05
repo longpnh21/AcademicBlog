@@ -11,14 +11,9 @@ namespace Application.Mappers
         {
             CreateMap<Category, CategoryResponse>().ReverseMap();
 
-            CreateMap<CreateCategoryCommand, Category>()
-                .ReverseMap();
+            CreateMap<CreateCategoryCommand, Category>();
 
-            CreateMap<EditCategoryCommand, Category>()
-                .ReverseMap();
-
-            CreateMap<DeleteCategoryCommand, Category>()
-                .ReverseMap();
+            CreateMap<EditCategoryCommand, Category>();
         }
     }
 }

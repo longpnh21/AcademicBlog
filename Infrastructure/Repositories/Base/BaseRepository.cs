@@ -15,6 +15,7 @@ namespace Infrastructure.Repositories.Base
         protected readonly AcademicBlogContext _context;
         public BaseRepository(AcademicBlogContext context)
         {
+            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             _context = context;
         }
 
@@ -32,7 +33,7 @@ namespace Infrastructure.Repositories.Base
         }
 
         public async Task<IEnumerable<T>> GetAllAsync()
-            => await _context.Set<T>().AsNoTracking().ToListAsync();
+            => await _context.Set<T>().ToListAsync();
 
         public async Task<PaginatedList<T>> GetWithPaginationAsync(
             int pageIndex = 1,

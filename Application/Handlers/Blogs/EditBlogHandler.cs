@@ -1,5 +1,4 @@
 ﻿using Application.Commands.Blogs;
-using Application.Interfaces;
 using Application.Mappers;
 using Application.Response;
 using Application.Response.Base;
@@ -17,12 +16,10 @@ namespace Application.Handlers.Blogs
     public class EditBlogHandler : IRequestHandler<EditBlogCommand, Response<BlogResponse>>
     {
         private readonly IBlogRepository _blogRepository;
-        private readonly IUploadService _uploadService;
 
-        public EditBlogHandler(IBlogRepository blogRepository, IUploadService uploadService)
+        public EditBlogHandler(IBlogRepository blogRepository)
         {
             _blogRepository = blogRepository;
-            _uploadService = uploadService;
         }
 
         public async Task<Response<BlogResponse>> Handle(EditBlogCommand request, CancellationToken cancellationToken)
@@ -34,7 +31,7 @@ namespace Application.Handlers.Blogs
             {
                 if (inDatabase is null)
                 {
-                    throw new ArgumentNullException("Not found entity");
+                    throw new NullReferenceException("Not found blog");
                 }
                 if (entity is null)
                 {
@@ -43,12 +40,11 @@ namespace Application.Handlers.Blogs
 
                 entity.Status = BlogStatus.Pending;
 
-                var newBlog = await _blogRepository.UpdateAsync(entity);
+                await _blogRepository.UpdateAsync(entity);
                 response = new Response<BlogResponse>()
                 {
                     StatusCode = HttpStatusCode.NoContent
                 };
-
             }
             catch (ApplicationException ex)
             {
@@ -57,7 +53,7 @@ namespace Application.Handlers.Blogs
                     StatusCode = HttpStatusCode.UnprocessableEntity
                 };
             }
-            catch (ArgumentNullException ex)
+            catch (NullReferenceException ex)
             {
                 response = new Response<BlogResponse>(ex.Message)
                 {
@@ -71,9 +67,7 @@ namespace Application.Handlers.Blogs
                     StatusCode = HttpStatusCode.InternalServerError
                 };
             }
-
             return response;
-
         }
     }
 }

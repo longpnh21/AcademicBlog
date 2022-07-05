@@ -17,7 +17,9 @@ namespace Api.ApiControllers.V1
         // GET: api/Tags
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get([FromQuery] GetTagWithPaginationQuery query)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAsync([FromQuery] GetTagWithPaginationQuery query)
         {
             try
             {
@@ -25,6 +27,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -41,7 +44,10 @@ namespace Api.ApiControllers.V1
         // GET api/Tags/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(int id)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
             try
             {
@@ -49,10 +55,12 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var query = new GetTagWithIdQuery()
                 {
-                    TagId = id
+                    Id = id
                 };
+
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -69,7 +77,9 @@ namespace Api.ApiControllers.V1
         // POST api/Tags
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Post([FromBody] CreateTagCommand command)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PostAsync([FromBody] CreateTagCommand command)
         {
             try
             {
@@ -77,6 +87,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -92,7 +103,11 @@ namespace Api.ApiControllers.V1
 
         // PUT api/Tags/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] EditTagCommand command)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PutAsync(int id, [FromBody] EditTagCommand command)
         {
             try
             {
@@ -100,6 +115,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 if (id != command.Id)
                 {
                     var response = new Response<TagResponse>("The Id do not match")
@@ -108,6 +124,7 @@ namespace Api.ApiControllers.V1
                     };
                     return StatusCode((int)response.StatusCode, response);
                 }
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -123,7 +140,11 @@ namespace Api.ApiControllers.V1
 
         // DELETE api/Tags/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             try
             {
@@ -131,10 +152,12 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var command = new DeleteTagCommand
                 {
-                    TagId = id
+                    Id = id
                 };
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }

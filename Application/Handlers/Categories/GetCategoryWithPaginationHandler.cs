@@ -15,38 +15,25 @@ namespace Application.Handlers.Categories
 {
     public class GetCategoryWithPaginationHandler : IRequestHandler<GetCategoryWithPaginationQuery, Response<PaginatedList<CategoryResponse>>>
     {
-        private readonly ICategoryRepository _CategoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
         public GetCategoryWithPaginationHandler(ICategoryRepository CategoryRepository)
         {
-            _CategoryRepository = CategoryRepository;
-
+            _categoryRepository = CategoryRepository;
         }
 
         public async Task<Response<PaginatedList<CategoryResponse>>> Handle(GetCategoryWithPaginationQuery request, CancellationToken cancellationToken)
         {
             var response = new Response<PaginatedList<CategoryResponse>>();
-
             try
             {
-                if (request.PageIndex <= 0 || request.PageSize <= 0)
-                {
-                    throw new ArgumentException("Invalid request");
-                }
-                var result = await _CategoryRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize);
+                var result = await _categoryRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Category>, PaginatedList<CategoryResponse>>(result);
+
                 response = new Response<PaginatedList<CategoryResponse>>(mappedResult)
                 {
                     StatusCode = HttpStatusCode.OK,
                 };
-            }
-            catch (ArgumentException ex)
-            {
-                response = new Response<PaginatedList<CategoryResponse>>(ex.Message)
-                {
-                    StatusCode = HttpStatusCode.BadRequest,
-                };
-
             }
             catch (Exception ex)
             {

@@ -8,7 +8,8 @@ namespace Application.Commands.Blogs
     public class ApproveBlogCommand : IRequest<Response<BlogResponse>>
     {
         [Required]
-        public int BlogId { get; set; }
+        [Range(0, int.MaxValue)]
+        public int Id { get; set; }
         public string ApproverId { get; set; }
     }
 }

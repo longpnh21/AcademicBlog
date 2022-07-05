@@ -1,6 +1,7 @@
 ﻿using Api.Models;
 using Api.Services;
 using Application.Response.Base;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
@@ -20,7 +21,10 @@ namespace Api.ApiControllers.V1
         }
 
         [HttpPost]
-        public async Task<IActionResult> Authenticate(AuthenticationRequest request)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AuthenticateAsync(AuthenticationRequest request)
         {
             try
             {
@@ -28,6 +32,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var result = await _authenticationService.Authenticate(request);
                 return StatusCode((int)result.StatusCode, result);
             }

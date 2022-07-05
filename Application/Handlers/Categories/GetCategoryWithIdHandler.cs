@@ -13,33 +13,46 @@ namespace Application.Handlers.Categories
 {
     public class GetCategoryWithIdHandler : IRequestHandler<GetCategoryWithIdQuery, Response<CategoryResponse>>
     {
-        private readonly ICategoryRepository _CategoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public GetCategoryWithIdHandler(ICategoryRepository CategoryRepository)
+        public GetCategoryWithIdHandler(ICategoryRepository categoryRepository)
         {
-            _CategoryRepository = CategoryRepository;
-
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<Response<CategoryResponse>> Handle(GetCategoryWithIdQuery query, CancellationToken cancellationToken)
         {
             var response = new Response<CategoryResponse>();
-
             try
             {
-                var result = await _CategoryRepository.GetByIdAsync(query.CategoryId);
-                var mappedResult = new CategoryResponse();
-                mappedResult = AcademicBlogMapper.Mapper.Map<CategoryResponse>(result);
+                var result = await _categoryRepository.GetByIdAsync(query.Id);
+                if (result is null)
+                {
+                    throw new NullReferenceException("Not found category");
+                }
+
+                var mappedResult = AcademicBlogMapper.Mapper.Map<CategoryResponse>(result);
+                if (mappedResult is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
                 response = new Response<CategoryResponse>(mappedResult)
                 {
                     StatusCode = HttpStatusCode.OK,
                 };
             }
-            catch (ArgumentException ex)
+            catch (NullReferenceException ex)
             {
                 response = new Response<CategoryResponse>(ex.Message)
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
+                    StatusCode = HttpStatusCode.NotFound,
+                };
+            }
+            catch (ApplicationException ex)
+            {
+                response = new Response<CategoryResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.UnprocessableEntity,
                 };
 
             }

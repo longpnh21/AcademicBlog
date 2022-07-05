@@ -8,6 +8,7 @@ namespace Application.Commands.Categories
     public class DeleteCategoryCommand : IRequest<Response<CategoryResponse>>
     {
         [Required]
-        public int CategoryId { get; set; }
+        [Range(0, int.MaxValue)]
+        public int Id { get; set; }
     }
 }

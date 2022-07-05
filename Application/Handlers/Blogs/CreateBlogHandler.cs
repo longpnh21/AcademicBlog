@@ -27,11 +27,10 @@ namespace Application.Handlers.Blogs
 
         public async Task<Response<BlogResponse>> Handle(CreateBlogCommand request, CancellationToken cancellationToken)
         {
-            var entity = AcademicBlogMapper.Mapper.Map<Blog>(request);
             var response = new Response<BlogResponse>();
-
             try
             {
+                var entity = AcademicBlogMapper.Mapper.Map<Blog>(request);
                 if (entity is null)
                 {
                     throw new ApplicationException("Issue with mapper");
@@ -69,9 +68,7 @@ namespace Application.Handlers.Blogs
                     StatusCode = HttpStatusCode.InternalServerError
                 };
             }
-
             return response;
-
         }
     }
 }

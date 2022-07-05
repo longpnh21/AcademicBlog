@@ -11,14 +11,9 @@ namespace Application.Mappers
         {
             CreateMap<Tag, TagResponse>().ReverseMap();
 
-            CreateMap<CreateTagCommand, Tag>()
-                .ReverseMap();
+            CreateMap<CreateTagCommand, Tag>();
 
-            CreateMap<EditTagCommand, Tag>()
-                .ReverseMap();
-
-            CreateMap<DeleteTagCommand, Tag>()
-                .ReverseMap();
+            CreateMap<EditTagCommand, Tag>();
         }
     }
 }

@@ -17,7 +17,9 @@ namespace Api.ApiControllers.V1
         // GET: api/Categorys
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get([FromQuery] GetCategoryWithPaginationQuery query)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAsync([FromQuery] GetCategoryWithPaginationQuery query)
         {
             try
             {
@@ -25,6 +27,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -41,7 +44,10 @@ namespace Api.ApiControllers.V1
         // GET api/Categorys/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get(int id)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetByIdAsync(int id)
         {
             try
             {
@@ -49,10 +55,12 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var query = new GetCategoryWithIdQuery()
                 {
-                    CategoryId = id
+                    Id = id
                 };
+
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -66,10 +74,12 @@ namespace Api.ApiControllers.V1
             }
         }
 
-        // POST api/Categorys
+        // POST api/Categories
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<IActionResult> Post([FromBody] CreateCategoryCommand command)
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PostAsync([FromBody] CreateCategoryCommand command)
         {
             try
             {
@@ -77,6 +87,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -92,7 +103,11 @@ namespace Api.ApiControllers.V1
 
         // PUT api/Categorys/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, [FromBody] EditCategoryCommand command)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PutAsync(int id, [FromBody] EditCategoryCommand command)
         {
             try
             {
@@ -100,6 +115,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 if (id != command.Id)
                 {
                     var response = new Response<CategoryResponse>("The Id do not match")
@@ -108,6 +124,7 @@ namespace Api.ApiControllers.V1
                     };
                     return StatusCode((int)response.StatusCode, response);
                 }
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -123,7 +140,11 @@ namespace Api.ApiControllers.V1
 
         // DELETE api/Categorys/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteAsync(int id)
         {
             try
             {
@@ -131,10 +152,12 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var command = new DeleteCategoryCommand()
                 {
-                    CategoryId = id
+                    Id = id
                 };
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }

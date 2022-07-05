@@ -12,11 +12,11 @@ namespace Application.Handlers.Categories
 {
     public class DeleteCategoryHandler : IRequestHandler<DeleteCategoryCommand, Response<CategoryResponse>>
     {
-        private readonly ICategoryRepository _CategoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
         public DeleteCategoryHandler(ICategoryRepository CategoryRepository)
         {
-            _CategoryRepository = CategoryRepository;
+            _categoryRepository = CategoryRepository;
         }
 
         public async Task<Response<CategoryResponse>> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
@@ -24,20 +24,23 @@ namespace Application.Handlers.Categories
             var response = new Response<CategoryResponse>();
             try
             {
-                var result = await _CategoryRepository.GetByIdAsync(request.CategoryId);
+                var result = await _categoryRepository.GetByIdAsync(request.Id);
+                if (result is null)
+                {
+                    throw new NullReferenceException();
+                }
 
-                await _CategoryRepository.DeleteAsync(result);
+                await _categoryRepository.DeleteAsync(result);
                 response = new Response<CategoryResponse>()
                 {
-                    StatusCode = HttpStatusCode.OK
+                    StatusCode = HttpStatusCode.NoContent
                 };
-
             }
-            catch (ApplicationException ex)
+            catch (NullReferenceException ex)
             {
                 response = new Response<CategoryResponse>(ex.Message)
                 {
-                    StatusCode = HttpStatusCode.UnprocessableEntity
+                    StatusCode = HttpStatusCode.NotFound
                 };
             }
             catch (Exception ex)
@@ -47,9 +50,7 @@ namespace Application.Handlers.Categories
                     StatusCode = HttpStatusCode.InternalServerError
                 };
             }
-
             return response;
-
         }
     }
 }

@@ -14,27 +14,29 @@ namespace Application.Handlers.Categories
 {
     public class CreateCategoryHandler : IRequestHandler<CreateCategoryCommand, Response<CategoryResponse>>
     {
-        private readonly ICategoryRepository _CategoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
-        public CreateCategoryHandler(ICategoryRepository CategoryRepository)
+        public CreateCategoryHandler(ICategoryRepository categoryRepository)
         {
-            _CategoryRepository = CategoryRepository;
+            _categoryRepository = categoryRepository;
         }
 
         public async Task<Response<CategoryResponse>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
-            var entity = AcademicBlogMapper.Mapper.Map<Category>(request);
             var response = new Response<CategoryResponse>();
             try
             {
+                var entity = AcademicBlogMapper.Mapper.Map<Category>(request);
                 if (entity is null)
                 {
                     throw new ApplicationException("Issue with mapper");
                 }
 
-                var newCategory = await _CategoryRepository.AddAsync(entity);
-                response = new Response<CategoryResponse>(AcademicBlogMapper.Mapper.Map<CategoryResponse>(newCategory));
-
+                var newCategory = await _categoryRepository.AddAsync(entity);
+                response = new Response<CategoryResponse>(AcademicBlogMapper.Mapper.Map<CategoryResponse>(newCategory))
+                {
+                    StatusCode = HttpStatusCode.Created
+                };
             }
             catch (ApplicationException ex)
             {

@@ -23,24 +23,38 @@ namespace Application.Handlers.Blogs
         public async Task<Response<BlogResponse>> Handle(GetBlogWithIdQuery query, CancellationToken cancellationToken)
         {
             var response = new Response<BlogResponse>();
-
             try
             {
-                var result = await _blogRepository.GetByIdAsync(query.BlogId);
-                var mappedResult = new BlogResponse();
-                mappedResult = AcademicBlogMapper.Mapper.Map<BlogResponse>(result);
+                var result = await _blogRepository.GetByIdAsync(query.Id);
+                if (result is null)
+                {
+                    throw new NullReferenceException("Not found blog");
+                }
+
+                var mappedResult = AcademicBlogMapper.Mapper.Map<BlogResponse>(result);
+                if (mappedResult is null)
+                {
+                    throw new ApplicationException("Issue with mapper");
+                }
+
                 response = new Response<BlogResponse>(mappedResult)
                 {
                     StatusCode = HttpStatusCode.OK,
+                };
+            }
+            catch (NullReferenceException ex)
+            {
+                response = new Response<BlogResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.NotFound,
                 };
             }
             catch (ArgumentException ex)
             {
                 response = new Response<BlogResponse>(ex.Message)
                 {
-                    StatusCode = HttpStatusCode.BadRequest,
+                    StatusCode = HttpStatusCode.UnprocessableEntity,
                 };
-
             }
             catch (Exception ex)
             {
@@ -49,9 +63,7 @@ namespace Application.Handlers.Blogs
                     StatusCode = HttpStatusCode.InternalServerError
                 };
             }
-
             return response;
-
         }
     }
 }

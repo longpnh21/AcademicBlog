@@ -23,19 +23,19 @@ namespace Application.Handlers.Tags
 
         public async Task<Response<TagResponse>> Handle(EditTagCommand request, CancellationToken cancellationToken)
         {
-            var entity = AcademicBlogMapper.Mapper.Map<Tag>(request);
             var response = new Response<TagResponse>();
             try
             {
+                var entity = AcademicBlogMapper.Mapper.Map<Tag>(request);
                 if (entity is null)
                 {
                     throw new ApplicationException("Issue with mapper");
                 }
 
                 var newTag = await _tagRepository.UpdateAsync(entity);
-                response = new Response<TagResponse>(AcademicBlogMapper.Mapper.Map<TagResponse>(newTag))
+                response = new Response<TagResponse>()
                 {
-                    StatusCode = HttpStatusCode.OK,
+                    StatusCode = HttpStatusCode.NoContent,
                 };
 
             }

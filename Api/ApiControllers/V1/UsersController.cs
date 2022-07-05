@@ -24,6 +24,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -38,8 +39,10 @@ namespace Api.ApiControllers.V1
         }
 
         // POST api/
-        [HttpPost()]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
         {
             try
@@ -48,6 +51,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }

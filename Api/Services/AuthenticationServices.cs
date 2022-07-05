@@ -31,7 +31,7 @@ namespace Api.Services
             try
             {
                 var user = await _userManager.FindByEmailAsync(request.Email);
-                if (user == null)
+                if (user is null)
                 {
                     throw new NullReferenceException("Not found account");
                 }

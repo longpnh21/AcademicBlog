@@ -23,18 +23,21 @@ namespace Application.Handlers.Tags
 
         public async Task<Response<TagResponse>> Handle(CreateTagCommand request, CancellationToken cancellationToken)
         {
-            var entity = AcademicBlogMapper.Mapper.Map<Tag>(request);
             var response = new Response<TagResponse>();
             try
             {
+                var entity = AcademicBlogMapper.Mapper.Map<Tag>(request);
                 if (entity is null)
                 {
                     throw new ApplicationException("Issue with mapper");
                 }
 
                 var newTag = await _tagRepository.AddAsync(entity);
-                response = new Response<TagResponse>(AcademicBlogMapper.Mapper.Map<TagResponse>(newTag));
 
+                response = new Response<TagResponse>(AcademicBlogMapper.Mapper.Map<TagResponse>(newTag))
+                {
+                    StatusCode = HttpStatusCode.Created
+                };
             }
             catch (ApplicationException ex)
             {

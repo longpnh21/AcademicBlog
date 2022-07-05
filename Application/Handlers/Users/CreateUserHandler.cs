@@ -33,8 +33,8 @@ namespace Application.Handlers.Categories
                 if (request.Role != "Student" && request.Role != "Mentor")
                 {
                     response.StatusCode = HttpStatusCode.BadRequest;
-
                 }
+
                 var User = new User() { UserName = request.Email, Email = request.Email, FullName = request.FullName };
                 var UserRole = new IdentityRole(request.Role);
 
@@ -43,15 +43,9 @@ namespace Application.Handlers.Categories
                     var result = await _userManager.CreateAsync(User, request.Password);
                     await _userManager.AddToRolesAsync(User, new[] { UserRole.Name });
                 }
+
                 response = new Response<UserResponse>(AcademicBlogMapper.Mapper.Map<UserResponse>(User));
 
-            }
-            catch (ApplicationException ex)
-            {
-                response = new Response<UserResponse>(ex.Message)
-                {
-                    StatusCode = HttpStatusCode.UnprocessableEntity
-                };
             }
             catch (Exception ex)
             {
@@ -60,9 +54,7 @@ namespace Application.Handlers.Categories
                     StatusCode = HttpStatusCode.InternalServerError
                 };
             }
-
             return response;
-
         }
     }
 }

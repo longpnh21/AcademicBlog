@@ -8,6 +8,7 @@ namespace Application.Commands.Tags
     public class DeleteTagCommand : IRequest<Response<TagResponse>>
     {
         [Required]
-        public int TagId { get; set; }
+        [Range(0, int.MaxValue)]
+        public int Id { get; set; }
     }
 }

@@ -25,13 +25,24 @@ namespace Application.Handlers.Blogs
             try
             {
                 var result = await _blogRepository.GetByIdAsync(request.Id);
+                if (result is null)
+                {
+                    throw new NullReferenceException("Not found blog");
+                }
 
                 await _blogRepository.DeleteAsync(result);
+
                 response = new Response<BlogResponse>()
                 {
                     StatusCode = HttpStatusCode.NoContent
                 };
-
+            }
+            catch (NullReferenceException ex)
+            {
+                response = new Response<BlogResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                };
             }
             catch (Exception ex)
             {
@@ -40,9 +51,7 @@ namespace Application.Handlers.Blogs
                     StatusCode = HttpStatusCode.InternalServerError
                 };
             }
-
             return response;
-
         }
     }
 }

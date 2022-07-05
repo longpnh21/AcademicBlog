@@ -14,28 +14,35 @@ namespace Application.Handlers.Categories
 {
     public class EditCategoryHandler : IRequestHandler<EditCategoryCommand, Response<CategoryResponse>>
     {
-        private readonly ICategoryRepository _CategoryRepository;
+        private readonly ICategoryRepository _categoryRepository;
 
         public EditCategoryHandler(ICategoryRepository CategoryRepository)
         {
-            _CategoryRepository = CategoryRepository;
+            _categoryRepository = CategoryRepository;
         }
 
         public async Task<Response<CategoryResponse>> Handle(EditCategoryCommand request, CancellationToken cancellationToken)
         {
-            var entity = AcademicBlogMapper.Mapper.Map<Category>(request);
             var response = new Response<CategoryResponse>();
             try
             {
+                var inDatabase = await _categoryRepository.GetByIdAsync(request.Id);
+                if (inDatabase is null)
+                {
+                    throw new ApplicationException("Not found category");
+                }
+
+                var entity = AcademicBlogMapper.Mapper.Map<Category>(request);
                 if (entity is null)
                 {
                     throw new ApplicationException("Issue with mapper");
                 }
 
-                var newCategory = await _CategoryRepository.UpdateAsync(entity);
-                response = new Response<CategoryResponse>(AcademicBlogMapper.Mapper.Map<CategoryResponse>(newCategory))
+                await _categoryRepository.UpdateAsync(entity);
+
+                response = new Response<CategoryResponse>()
                 {
-                    StatusCode = HttpStatusCode.OK,
+                    StatusCode = HttpStatusCode.NoContent,
                 };
 
             }

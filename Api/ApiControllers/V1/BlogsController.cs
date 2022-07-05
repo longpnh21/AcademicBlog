@@ -26,9 +26,12 @@ namespace Api.ApiControllers.V1
         {
             _userManager = userManager;
         }
+
         // GET: api/Blogs
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAsync([FromQuery] GetBlogWithPaginationQuery query)
         {
             try
@@ -37,6 +40,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -53,6 +57,9 @@ namespace Api.ApiControllers.V1
         // GET api/Blogs/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
             try
@@ -61,10 +68,12 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var query = new GetBlogWithIdQuery()
                 {
-                    BlogId = id
+                    Id = id
                 };
+
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -81,6 +90,8 @@ namespace Api.ApiControllers.V1
         // POST api/Blogs
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Post([FromBody] CreateBlogCommand command)
         {
             try
@@ -89,6 +100,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 var user = (User)HttpContext.Items["User"];
                 //remove when release
                 var admin = await _userManager.FindByEmailAsync("administrator@academicblog.com");
@@ -109,6 +121,9 @@ namespace Api.ApiControllers.V1
 
         // PUT api/Blogs/5
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PutAsync(int id, [FromBody] EditBlogCommand command)
         {
             try
@@ -117,10 +132,12 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
                 if (id != command.Id)
                 {
                     return BadRequest();
                 }
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
@@ -136,6 +153,9 @@ namespace Api.ApiControllers.V1
 
         // DELETE api/Blogs/5
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -160,6 +180,9 @@ namespace Api.ApiControllers.V1
 
         // PUT api/Tags/5
         [HttpPut("Approve")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> ApproveBlog([FromBody] ApproveBlogCommand command)
         {
             try
@@ -168,6 +191,12 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
+                var user = (User)HttpContext.Items["User"];
+                //remove when release
+                var admin = await _userManager.FindByEmailAsync("administrator@academicblog.com");
+                command.ApproverId = user.Id ?? admin.Id;
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }

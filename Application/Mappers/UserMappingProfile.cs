@@ -12,8 +12,7 @@ namespace Application.Mappers
             CreateMap<User, UserResponse>()
                 .ReverseMap();
 
-            CreateMap<CreateUserCommand, User>()
-                .ReverseMap();
+            CreateMap<CreateUserCommand, User>();
         }
     }
 }
