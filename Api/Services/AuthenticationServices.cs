@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
@@ -42,7 +43,9 @@ namespace Api.Services
 
 
                 var tokenHandler = new JwtSecurityTokenHandler();
+                string rolename = ((List<string>)await _userManager.GetRolesAsync(user)).FirstOrDefault();
                 var claims = await _userManager.GetClaimsAsync(user);
+                claims.Add(new Claim(ClaimTypes.Role, rolename));
                 var token = GenerateJwtToken(user, claims);
                 var response = new AuthenticationResponse
                 {

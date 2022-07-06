@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -192,10 +193,11 @@ namespace Api.ApiControllers.V1
                     return BadRequest();
                 }
 
-                var user = (User)HttpContext.Items["User"];
+                string userId = User.FindFirstValue("id");
                 //remove when release
                 var admin = await _userManager.FindByEmailAsync("administrator@academicblog.com");
-                command.ApproverId = user.Id ?? admin.Id;
+                Console.WriteLine(userId);
+                command.ApproverId = userId ?? admin.Id;
 
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
