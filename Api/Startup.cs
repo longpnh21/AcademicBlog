@@ -55,7 +55,7 @@ namespace Api
             services.AddScoped<AcademicBlogContext>();
 
             services.AddAutoMapper(typeof(Startup));
-
+            services.AddCors();
             //Blog
             services.AddMediatR(typeof(CreateBlogHandler).GetTypeInfo().Assembly);
 
@@ -88,7 +88,10 @@ namespace Api
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+            });
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
