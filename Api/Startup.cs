@@ -96,18 +96,6 @@ namespace Api
 
             services.AddAutoMapper(typeof(Startup));
             services.AddCors();
-            //Google Firebase
-            string rootPath;
-            if (!string.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("HOME")))
-            {
-                rootPath = Path.Combine(System.Environment.GetEnvironmentVariable("HOME"), "site", "wwwroot");
-            }
-            else
-            {
-                rootPath = ".";
-            }
-
-            string firebaseSdkPath = Path.Combine(rootPath, Configuration["Firebase:FileOptions"]);
 
             //Blog
             services.AddMediatR(typeof(CreateBlogHandler).GetTypeInfo().Assembly);
