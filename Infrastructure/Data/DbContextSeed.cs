@@ -33,7 +33,7 @@ namespace Infrastructure.Data
                 await roleManager.AddClaimAsync(mentor, new Claim(ClaimTypes.Role, student.Name));
             }
 
-            var administrator = new User() { UserName = "admin", Email = "administrator@academicblog.com" };
+            var administrator = new User() { UserName = "admin", FullName = "admin", Email = "administrator@academicblog.com" };
 
             if (userManager.Users.All(u => u.UserName != administrator.UserName))
             {

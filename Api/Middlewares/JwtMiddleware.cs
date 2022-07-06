@@ -29,13 +29,13 @@ namespace Api.Middlewares
 
             if (token is not null)
             {
-                AttachUserToContext(context, userManager, token);
+                await AttachUserToContext(context, userManager, token);
             }
 
             await _next(context);
         }
 
-        private void AttachUserToContext(HttpContext context, UserManager<User> userManager, string token)
+        private async Task AttachUserToContext(HttpContext context, UserManager<User> userManager, string token)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace Api.Middlewares
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 string userId = jwtToken.Claims.First(x => x.Type == "id").Value;
 
-                context.Items["User"] = userManager.FindByIdAsync(userId);
+                context.Items["User"] = await userManager.FindByIdAsync(userId);
             }
             catch
             {

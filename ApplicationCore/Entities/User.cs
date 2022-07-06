@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
+using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -19,10 +20,10 @@ namespace Core.Entities
         [Required]
         [Key]
         [MaxLength(300)]
-        public override string Id { get; set; }
+        public override string Id { get; set; } = Guid.NewGuid().ToString();
 
         [MaxLength(500)]
-        public string FullName { get; set; }
+        public string? FullName { get; set; }
 
         public virtual ICollection<Blog> BlogApprovers { get; set; }
         public virtual ICollection<Blog> BlogCreators { get; set; }

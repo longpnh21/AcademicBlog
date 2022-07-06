@@ -44,7 +44,6 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Blog>(entity =>
         {
             entity.Property(e => e.ApproverId)
-                .IsRequired()
                 .HasMaxLength(300);
 
             entity.Property(e => e.Content)
@@ -164,7 +163,6 @@ namespace Infrastructure.Data
                 entity.Property(e => e.Id).HasMaxLength(300);
 
                 entity.Property(e => e.FullName)
-                    .IsRequired()
                     .HasMaxLength(500);
             });
 

@@ -35,16 +35,16 @@ namespace Application.Handlers.Categories
                     response.StatusCode = HttpStatusCode.BadRequest;
                 }
 
-                var User = new User() { UserName = request.Email, Email = request.Email, FullName = request.FullName };
-                var UserRole = new IdentityRole(request.Role);
+                var user = new User() { UserName = request.Email, Email = request.Email, FullName = request.FullName };
+                var userRole = new IdentityRole(request.Role);
 
-                if (_userManager.Users.All(u => u.UserName != User.UserName))
+                if (_userManager.Users.All(u => u.UserName != user.UserName))
                 {
-                    var result = await _userManager.CreateAsync(User, request.Password);
-                    await _userManager.AddToRolesAsync(User, new[] { UserRole.Name });
+                    var result = await _userManager.CreateAsync(user, request.Password);
+                    await _userManager.AddToRoleAsync(user, userRole.Name);
                 }
 
-                response = new Response<UserResponse>(AcademicBlogMapper.Mapper.Map<UserResponse>(User));
+                response = new Response<UserResponse>(AcademicBlogMapper.Mapper.Map<UserResponse>(user));
 
             }
             catch (Exception ex)

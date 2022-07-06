@@ -93,7 +93,7 @@ namespace Api.ApiControllers.V1
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] CreateBlogCommand command)
+        public async Task<IActionResult> Post([FromForm] CreateBlogCommand command)
         {
             try
             {

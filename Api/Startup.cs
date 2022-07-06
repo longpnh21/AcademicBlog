@@ -7,8 +7,6 @@ using Core.Entities;
 using Core.Repositories;
 using Core.Repositories.Base;
 using EntityFrameworkCore.UseRowNumberForPaging;
-using FirebaseAdmin;
-using Google.Apis.Auth.OAuth2;
 using Infrastructure.Data;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Base;
@@ -83,6 +81,17 @@ namespace Api
                 .AddSignInManager()
                 .AddDefaultTokenProviders();
 
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Default Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 5;
+                options.Password.RequiredUniqueChars = 0;
+            });
+
             services.AddScoped<AcademicBlogContext>();
 
             services.AddAutoMapper(typeof(Startup));
@@ -99,11 +108,6 @@ namespace Api
             }
 
             string firebaseSdkPath = Path.Combine(rootPath, Configuration["Firebase:FileOptions"]);
-
-            FirebaseApp.Create(new AppOptions
-            {
-                Credential = GoogleCredential.FromFile(firebaseSdkPath)
-            });
 
             //Blog
             services.AddMediatR(typeof(CreateBlogHandler).GetTypeInfo().Assembly);
