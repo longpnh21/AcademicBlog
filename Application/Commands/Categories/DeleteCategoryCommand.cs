@@ -1,16 +1,14 @@
 ﻿using Application.Response;
 using Application.Response.Base;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace Application.Commands.Categories
 {
     public class DeleteCategoryCommand : IRequest<Response<CategoryResponse>>
     {
-        public int CategoryId { get; set; }
+        [Required]
+        [Range(0, int.MaxValue)]
+        public int Id { get; set; }
     }
 }

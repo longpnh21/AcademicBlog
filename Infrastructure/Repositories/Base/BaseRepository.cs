@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories.Base
@@ -14,6 +15,7 @@ namespace Infrastructure.Repositories.Base
         protected readonly AcademicBlogContext _context;
         public BaseRepository(AcademicBlogContext context)
         {
+            context.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             _context = context;
         }
 
@@ -33,8 +35,32 @@ namespace Infrastructure.Repositories.Base
         public async Task<IEnumerable<T>> GetAllAsync()
             => await _context.Set<T>().ToListAsync();
 
-        public async Task<IEnumerable<T>> GetWithPaginationAsync(int pageIndex = 1, int pageSize = 50)
-            => await _context.Set<T>().Skip((pageIndex - 1)  * pageSize).Take(pageSize).ToListAsync();
+        public async Task<PaginatedList<T>> GetWithPaginationAsync(
+            int pageIndex = 1,
+            int pageSize = 50,
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = "")
+        {
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
+            if (filter is not null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (string includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (orderBy is not null)
+            {
+                query = orderBy(query);
+            }
+
+            return await PaginatedList<T>.ToPaginatedList(query, pageIndex, pageSize);
+        }
 
         public async Task<T> GetByIdAsync(int id)
             => await _context.Set<T>().FindAsync(id);

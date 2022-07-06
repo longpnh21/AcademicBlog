@@ -1,14 +1,10 @@
-﻿using Application.Commands;
-using Application.Commands.Users;
-using Application.Queries;
+﻿using Application.Commands.Users;
 using Application.Queries.Users;
 using Application.Response;
 using Application.Response.Base;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -24,31 +20,47 @@ namespace Api.ApiControllers.V1
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<TagResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<TagResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
 
         // POST api/
-        [HttpPost()]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest();
+                }
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }
             catch (Exception ex)
             {
-                var response = new Response<UserResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                var response = new Response<UserResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
                 return StatusCode((int)response.StatusCode, response);
             }
         }
