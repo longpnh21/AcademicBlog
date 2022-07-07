@@ -1,5 +1,4 @@
 ﻿using Application.Mappers;
-using Application.Queries.Tags;
 using Application.Queries.Users;
 using Application.Response;
 using Application.Response.Base;

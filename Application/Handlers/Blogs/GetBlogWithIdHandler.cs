@@ -23,9 +23,10 @@ namespace Application.Handlers.Blogs
         public async Task<Response<BlogResponse>> Handle(GetBlogWithIdQuery query, CancellationToken cancellationToken)
         {
             var response = new Response<BlogResponse>();
+            string includedProperties = "Media";
             try
             {
-                var result = await _blogRepository.GetByIdAsync(query.Id);
+                var result = await _blogRepository.GetByIdAsync(query.Id, includedProperties);
                 if (result is null)
                 {
                     throw new NullReferenceException("Not found blog");

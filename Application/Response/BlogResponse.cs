@@ -1,4 +1,5 @@
 ﻿using Core.Enums;
+using System.Collections.Generic;
 
 namespace Application.Response
 {
@@ -9,5 +10,6 @@ namespace Application.Response
         public BlogStatus Status { get; set; }
         public string CreatorId { get; set; }
         public string ApproverId { get; set; }
+        public IEnumerable<MediaResponse> Media { get; set; }
     }
 }

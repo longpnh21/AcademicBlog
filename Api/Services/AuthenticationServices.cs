@@ -45,7 +45,7 @@ namespace Api.Services
                 var tokenHandler = new JwtSecurityTokenHandler();
                 // TODO: Remove this before demo
                 string rolename = ((List<string>)await _userManager.GetRolesAsync(user)).FirstOrDefault();
-                
+
                 var claims = await _userManager.GetClaimsAsync(user);
                 claims.Add(new Claim(ClaimTypes.Role, rolename));
                 var token = GenerateJwtToken(user, claims);
