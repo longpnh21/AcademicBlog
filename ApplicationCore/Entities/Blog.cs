@@ -26,10 +26,9 @@ namespace Core.Entities
         public BlogStatus Status { get; set; }
         [Required]
         public string CreatorId { get; set; }
-        [Required]
-        public string ApproverId { get; set; }
+        public string? ApproverId { get; set; }
 
-        public virtual User Approver { get; set; }
+        public virtual User? Approver { get; set; }
         public virtual User Creator { get; set; }
         public virtual ICollection<BlogCategory> BlogCategories { get; set; }
         public virtual ICollection<BlogTag> BlogTags { get; set; }

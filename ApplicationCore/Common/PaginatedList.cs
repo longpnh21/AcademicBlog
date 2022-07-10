@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Core.Common
 {
@@ -9,17 +11,27 @@ namespace Core.Common
 
         public int PageIndex { get; private set; }
         public int PageSize { get; private set; }
-        public int TotalCount { get; private set; }
         public int TotalPages { get; private set; }
 
-        public PaginatedList(IEnumerable<T> source, int pageIndex, int pageSize)
+        public PaginatedList()
+        {
+
+        }
+
+        public PaginatedList(IEnumerable<T> source, int count, int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
             PageSize = pageSize;
-            TotalCount = source.Count();
-            TotalPages = (int)Math.Ceiling(TotalCount / (double)PageSize);
+            TotalPages = (int)Math.Ceiling(count / (double)PageSize);
 
             AddRange(source);
+        }
+
+        public static async Task<PaginatedList<T>> ToPaginatedList(IQueryable<T> query, int pageIndex, int pageSize)
+        {
+            int count = await query.CountAsync();
+            var result = await query.ToListAsync();
+            return new PaginatedList<T>(result, count, pageIndex, pageSize);
         }
 
         public bool HasPreviousPage => PageIndex > 0;

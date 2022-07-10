@@ -1,15 +1,13 @@
 ﻿using Application.Commands.Blogs;
-using Application.Mappers;
 using Application.Response;
 using Application.Response.Base;
 using Core.Entities;
+using Core.Enums;
 using Core.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,47 +15,58 @@ namespace Application.Handlers.Blogs
 {
     public class ApproveBlogHandler : IRequestHandler<ApproveBlogCommand, Response<BlogResponse>>
     {
-        private readonly IBlogRepository _BlogRepository;
+        private readonly IBlogRepository _blogRepository;
+        private readonly UserManager<User> _userManager;
 
-        public ApproveBlogHandler(IBlogRepository BlogRepository)
+        public ApproveBlogHandler(IBlogRepository blogRepository, UserManager<User> userManager)
         {
-            _BlogRepository = BlogRepository;
+            _blogRepository = blogRepository;
+            _userManager = userManager;
         }
 
         public async Task<Response<BlogResponse>> Handle(ApproveBlogCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _BlogRepository.GetByIdAsync(request.BlogId);
+
             var response = new Response<BlogResponse>();
             try
             {
+                var entity = await _blogRepository.GetByIdAsync(request.Id);
                 if (entity is null)
                 {
-                    response.StatusCode = HttpStatusCode.NotFound;
-                    return response;
+                    throw new NullReferenceException("Not found blog");
                 }
-                entity.ApproverId = request.ApproverId;
-                entity.Status = Core.Enums.BlogStatus.Available;
 
-                var newBlog = await _BlogRepository.UpdateAsync(entity);
-                response = new Response<BlogResponse>(AcademicBlogMapper.Mapper.Map<BlogResponse>(newBlog))
+                var approver = await _userManager.FindByIdAsync(request.ApproverId);
+                if (approver is null)
                 {
-                    StatusCode = HttpStatusCode.OK,
-                };
+                    throw new NullReferenceException("Not found approver");
+                }
 
+                entity.ApproverId = approver.Id;
+                entity.Status = BlogStatus.Available;
+
+                await _blogRepository.UpdateAsync(entity);
+
+                response = new Response<BlogResponse>()
+                {
+                    StatusCode = HttpStatusCode.NoContent,
+                };
             }
-            catch (ApplicationException ex)
+            catch (NullReferenceException ex)
             {
-                response = new Response<BlogResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.UnprocessableEntity;
+                response = new Response<BlogResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.NotFound
+                };
             }
             catch (Exception ex)
             {
-                response = new Response<BlogResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                response = new Response<BlogResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
             }
-
             return response;
-
         }
     }
 }

@@ -1,14 +1,7 @@
-﻿using Application.Commands;
-using Application.Commands.Users;
+﻿using Application.Commands.Users;
 using Application.Response;
-using Application.Response.Base;
 using AutoMapper;
 using Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Mappers
 {
@@ -19,8 +12,7 @@ namespace Application.Mappers
             CreateMap<User, UserResponse>()
                 .ReverseMap();
 
-            CreateMap<CreateUserCommand, User>()
-                .ReverseMap();
+            CreateMap<CreateUserCommand, User>();
         }
     }
 }

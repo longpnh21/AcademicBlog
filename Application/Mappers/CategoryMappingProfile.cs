@@ -2,11 +2,6 @@
 using Application.Response;
 using AutoMapper;
 using Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Mappers
 {
@@ -16,14 +11,9 @@ namespace Application.Mappers
         {
             CreateMap<Category, CategoryResponse>().ReverseMap();
 
-            CreateMap<CreateCategoryCommand, Category>()
-                .ReverseMap();
+            CreateMap<CreateCategoryCommand, Category>();
 
-            CreateMap<EditCategoryCommand, Category>()
-                .ReverseMap();
-
-            CreateMap<DeleteCategoryCommand, Category>()
-                .ReverseMap();
+            CreateMap<EditCategoryCommand, Category>();
         }
     }
 }

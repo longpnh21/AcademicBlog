@@ -2,10 +2,6 @@
 using Core.Repositories;
 using Infrastructure.Data;
 using Infrastructure.Repositories.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -14,5 +10,7 @@ namespace Infrastructure.Repositories
     {
         public UserRepository(AcademicBlogContext context) : base(context) { }
 
+        public async Task<User> GetByIdAsync(string id)
+            => await _context.Set<User>().FindAsync(id);
     }
 }

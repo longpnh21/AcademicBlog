@@ -34,7 +34,7 @@ namespace Infrastructure.Data
 
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
-                var tableName = entityType.GetTableName();
+                string tableName = entityType.GetTableName();
                 if (tableName.StartsWith("AspNet"))
                 {
                     entityType.SetTableName(tableName.Substring(6));
@@ -44,7 +44,6 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Blog>(entity =>
         {
             entity.Property(e => e.ApproverId)
-                .IsRequired()
                 .HasMaxLength(300);
 
             entity.Property(e => e.Content)
@@ -164,7 +163,6 @@ namespace Infrastructure.Data
                 entity.Property(e => e.Id).HasMaxLength(300);
 
                 entity.Property(e => e.FullName)
-                    .IsRequired()
                     .HasMaxLength(500);
             });
 

@@ -6,10 +6,7 @@ using Core.Entities;
 using Core.Repositories;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,31 +23,35 @@ namespace Application.Handlers.Tags
 
         public async Task<Response<TagResponse>> Handle(EditTagCommand request, CancellationToken cancellationToken)
         {
-            var entity = AcademicBlogMapper.Mapper.Map<Tag>(request);
             var response = new Response<TagResponse>();
             try
             {
+                var entity = AcademicBlogMapper.Mapper.Map<Tag>(request);
                 if (entity is null)
                 {
                     throw new ApplicationException("Issue with mapper");
                 }
 
                 var newTag = await _tagRepository.UpdateAsync(entity);
-                response = new Response<TagResponse>(AcademicBlogMapper.Mapper.Map<TagResponse>(newTag))
+                response = new Response<TagResponse>()
                 {
-                    StatusCode = HttpStatusCode.OK,
+                    StatusCode = HttpStatusCode.NoContent,
                 };
 
             }
             catch (ApplicationException ex)
             {
-                response = new Response<TagResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.UnprocessableEntity;
+                response = new Response<TagResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.UnprocessableEntity
+                };
             }
             catch (Exception ex)
             {
-                response = new Response<TagResponse>(ex.Message);
-                response.StatusCode = HttpStatusCode.InternalServerError;
+                response = new Response<TagResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
             }
 
             return response;

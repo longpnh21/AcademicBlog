@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Data
@@ -19,17 +20,20 @@ namespace Infrastructure.Data
             if (roleManager.Roles.All(r => r.Name != adminRole.Name))
             {
                 await roleManager.CreateAsync(adminRole);
+                await roleManager.AddClaimAsync(adminRole, new Claim(ClaimTypes.Role, adminRole.Name));
             }
             if (roleManager.Roles.All(r => r.Name != mentor.Name))
             {
                 await roleManager.CreateAsync(mentor);
+                await roleManager.AddClaimAsync(mentor, new Claim(ClaimTypes.Role, mentor.Name));
             }
             if (roleManager.Roles.All(r => r.Name != student.Name))
             {
                 await roleManager.CreateAsync(student);
+                await roleManager.AddClaimAsync(mentor, new Claim(ClaimTypes.Role, student.Name));
             }
 
-            var administrator = new User() { UserName = "admin", Email = "administrator@academicblog.com"};
+            var administrator = new User() { UserName = "admin", FullName = "admin", Email = "administrator@academicblog.com" };
 
             if (userManager.Users.All(u => u.UserName != administrator.UserName))
             {

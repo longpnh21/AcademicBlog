@@ -14,6 +14,7 @@ namespace Application.Mappers
                 cfg.AddProfile<TagMappingProfile>();
                 cfg.AddProfile<CategoryMappingProfile>();
                 cfg.AddProfile<UserMappingProfile>();
+                cfg.AddProfile<MediaMappingProfile>();
             });
 
             var mapper = config.CreateMapper();

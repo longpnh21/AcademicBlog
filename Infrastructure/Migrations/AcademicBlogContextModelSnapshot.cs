@@ -28,7 +28,6 @@ namespace Infrastructure.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ApproverId")
-                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -193,7 +192,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -398,8 +396,7 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.User", "Approver")
                         .WithMany("BlogApprovers")
                         .HasForeignKey("ApproverId")
-                        .HasConstraintName("FK_Blogs_Users1")
-                        .IsRequired();
+                        .HasConstraintName("FK_Blogs_Users1");
 
                     b.HasOne("Core.Entities.User", "Creator")
                         .WithMany("BlogCreators")
