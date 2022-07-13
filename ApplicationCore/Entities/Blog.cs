@@ -1,4 +1,5 @@
 ﻿using Core.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -27,7 +28,7 @@ namespace Core.Entities
         [Required]
         public string CreatorId { get; set; }
         public string? ApproverId { get; set; }
-
+        public DateTime ModifiedTime { get; set; } = DateTime.Now;
         public virtual User? Approver { get; set; }
         public virtual User Creator { get; set; }
         public virtual ICollection<BlogCategory> BlogCategories { get; set; }

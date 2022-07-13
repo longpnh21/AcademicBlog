@@ -42,6 +42,17 @@ namespace Api.ApiControllers.V1
                     return BadRequest();
                 }
 
+                var user = (User)HttpContext.Items["User"];
+                //remove when release
+                var admin = await _userManager.FindByEmailAsync("administrator@academicblog.com");
+                if (user != null)
+                {
+                    string role = User.FindFirstValue("role");
+                    if (role == null || role.ToLower().Equals("student"))
+                    {
+                        query.IsApprover = false;
+                    }
+                }
                 var result = await Mediator.Send(query);
                 return StatusCode((int)result.StatusCode, result);
             }

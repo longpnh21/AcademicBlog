@@ -25,7 +25,7 @@ namespace Application.Handlers.Categories
             var response = new Response<CategoryResponse>();
             try
             {
-                var result = await _categoryRepository.GetByIdAsync(query.Id);
+                var result = await _categoryRepository.GetByIdAsync(new object[] { query.Id });
                 if (result is null)
                 {
                     throw new NullReferenceException("Not found category");

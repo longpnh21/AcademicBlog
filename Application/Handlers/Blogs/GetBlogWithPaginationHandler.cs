@@ -4,6 +4,7 @@ using Application.Response;
 using Application.Response.Base;
 using Core.Common;
 using Core.Entities;
+using Core.Enums;
 using Core.Repositories;
 using MediatR;
 using System;
@@ -36,7 +37,11 @@ namespace Application.Handlers.Blogs
                 {
                     filter = e => e.CreatorId == request.UserId;
                 }
-                var result = await _blogRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter, includeProperties: includedProperties);
+                if (!request.IsApprover)
+                {
+                    filter = e => e.Status == BlogStatus.Available;
+                }
+                var result = await _blogRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter, orderBy: orderBy,includeProperties: includedProperties);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Blog>, PaginatedList<BlogResponse>>(result);
 
                 response = new Response<PaginatedList<BlogResponse>>(mappedResult)

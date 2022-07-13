@@ -26,7 +26,7 @@ namespace Application.Handlers.Categories
             var response = new Response<CategoryResponse>();
             try
             {
-                var inDatabase = await _categoryRepository.GetByIdAsync(request.Id);
+                var inDatabase = await _categoryRepository.GetByIdAsync(new object[] { request.Id });
                 if (inDatabase is null)
                 {
                     throw new ApplicationException("Not found category");

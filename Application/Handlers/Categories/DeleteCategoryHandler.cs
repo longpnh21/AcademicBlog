@@ -24,7 +24,7 @@ namespace Application.Handlers.Categories
             var response = new Response<CategoryResponse>();
             try
             {
-                var result = await _categoryRepository.GetByIdAsync(request.Id);
+                var result = await _categoryRepository.GetByIdAsync(new object[] { request.Id });
                 if (result is null)
                 {
                     throw new NullReferenceException();

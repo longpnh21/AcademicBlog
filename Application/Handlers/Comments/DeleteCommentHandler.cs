@@ -24,7 +24,7 @@ namespace Application.Handlers.Comments
             var response = new Response<CommentResponse>();
             try
             {
-                var result = await _commentRepository.GetByIdAsync(request.Id);
+                var result = await _commentRepository.GetByIdAsync(new object[] { request.Id });
                 if (result is null)
                 {
                     throw new NullReferenceException("Not found comment");
