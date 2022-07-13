@@ -110,6 +110,7 @@ namespace Api
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IVoteRepository, VoteRepository>();
 
             services.AddSwaggerGen(c =>
             {

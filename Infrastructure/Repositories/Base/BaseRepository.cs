@@ -32,8 +32,30 @@ namespace Infrastructure.Repositories.Base
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
-            => await _context.Set<T>().ToListAsync();
+        public async Task<IEnumerable<T>> GetAllAsync(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = "")
+        {
+            var query = _context.Set<T>().AsQueryable().AsNoTracking();
+            if (filter is not null)
+            {
+                query = query.Where(filter);
+            }
+
+            foreach (string includeProperty in includeProperties.Split
+                (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                query = query.Include(includeProperty);
+            }
+
+            if (orderBy is not null)
+            {
+                query = orderBy(query);
+            }
+
+            return await query.ToListAsync();
+        }
 
         public async Task<PaginatedList<T>> GetWithPaginationAsync(
             int pageIndex = 1,
@@ -62,7 +84,7 @@ namespace Infrastructure.Repositories.Base
             return await PaginatedList<T>.ToPaginatedList(query, pageIndex, pageSize);
         }
 
-        public async Task<T> GetByIdAsync(int id)
+        public async Task<T> GetByIdAsync(object[] id)
             => await _context.Set<T>().FindAsync(id);
 
         public async Task<T> UpdateAsync(T entity)

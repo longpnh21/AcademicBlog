@@ -16,6 +16,7 @@ namespace Application.Mappers
                 cfg.AddProfile<UserMappingProfile>();
                 cfg.AddProfile<CommentMapperProfile>();
                 cfg.AddProfile<MediaMappingProfile>();
+                cfg.AddProfile<VoteMappingProfile>();
             });
 
             var mapper = config.CreateMapper();

@@ -24,7 +24,7 @@ namespace Application.Handlers.Tags
             var response = new Response<TagResponse>();
             try
             {
-                var result = await _tagRepository.GetByIdAsync(request.Id);
+                var result = await _tagRepository.GetByIdAsync(new object[] {request.Id});
                 if (result is null)
                 {
                     throw new NullReferenceException("Not found tag");
