@@ -7,6 +7,8 @@ using Core.Entities;
 using Core.Repositories;
 using MediatR;
 using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,10 +27,16 @@ namespace Application.Handlers.Blogs
         public async Task<Response<PaginatedList<BlogResponse>>> Handle(GetBlogWithPaginationQuery request, CancellationToken cancellationToken)
         {
             var response = new Response<PaginatedList<BlogResponse>>();
+            Expression<Func<Blog, bool>> filter = null;
+            Func<IQueryable<Blog>, IOrderedQueryable<Blog>> orderBy = null;
             string includedProperties = "Media";
             try
             {
-                var result = await _blogRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, includeProperties: includedProperties);
+                if (!string.IsNullOrWhiteSpace(request.UserId))
+                {
+                    filter = e => e.CreatorId == request.UserId;
+                }
+                var result = await _blogRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter, includeProperties: includedProperties);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Blog>, PaginatedList<BlogResponse>>(result);
 
                 response = new Response<PaginatedList<BlogResponse>>(mappedResult)
