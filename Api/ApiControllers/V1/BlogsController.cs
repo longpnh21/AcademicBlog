@@ -47,10 +47,14 @@ namespace Api.ApiControllers.V1
                 var admin = await _userManager.FindByEmailAsync("administrator@academicblog.com");
                 if (user != null)
                 {
-                    string role = User.FindFirstValue("role");
-                    if (role == null || role.ToLower().Equals("student"))
+                    string role = HttpContext.Items["Role"].ToString();
+                    if (string.IsNullOrEmpty(role) || !role.ToLower().Equals("student"))
                     {
-                        query.IsApprover = false;
+                        query.IsStatusVisable = true;
+                    }
+                    else if (query.UserId == user.Id)
+                    {
+                        query.IsStatusVisable = true;
                     }
                 }
                 var result = await Mediator.Send(query);

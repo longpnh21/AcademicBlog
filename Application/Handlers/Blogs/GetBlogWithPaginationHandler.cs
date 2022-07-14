@@ -37,9 +37,20 @@ namespace Application.Handlers.Blogs
                 {
                     filter = e => e.CreatorId == request.UserId;
                 }
-                if (!request.IsApprover)
+                if (!request.IsStatusVisable)
                 {
                     filter = e => e.Status == BlogStatus.Available;
+                }
+                if (string.IsNullOrWhiteSpace(request.OrderBy))
+                {
+                    if (request.IsStatusVisable)
+                    {
+                        orderBy = e => e.OrderByDescending(x => x.ModifiedTime);
+                    }
+                    else
+                    {
+                        orderBy = e => e.OrderBy(x => x.ModifiedTime);
+                    }
                 }
                 var result = await _blogRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter, orderBy: orderBy,includeProperties: includedProperties);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Blog>, PaginatedList<BlogResponse>>(result);

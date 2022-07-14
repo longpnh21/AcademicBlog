@@ -16,6 +16,6 @@ namespace Application.Queries.Blogs
         public string UserId { get; set; }
         public string OrderBy { get; set; }
         [JsonIgnore]
-        public bool IsApprover { get; set; }
+        public bool IsStatusVisable { get; set; }
     }
 }

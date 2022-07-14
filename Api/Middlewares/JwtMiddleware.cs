@@ -54,8 +54,9 @@ namespace Api.Middlewares
 
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 string userId = jwtToken.Claims.First(x => x.Type == "id").Value;
-
+                string role = jwtToken.Claims.First(x => x.Type == "role").Value;
                 context.Items["User"] = await userManager.FindByIdAsync(userId);
+                context.Items["Role"] = role;
             }
             catch
             {
