@@ -18,7 +18,7 @@ namespace Core.Entities
         public string UserId { get; set; }
         public int? ReferenceId { get; set; }
 
-        public virtual Category Blog { get; set; }
+        public virtual Blog Blog { get; set; }
         public virtual Comment Reference { get; set; }
         public virtual User User { get; set; }
         public virtual ICollection<Comment> InverseReference { get; set; }

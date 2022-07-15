@@ -30,8 +30,8 @@ namespace Application.Handlers.Blogs
         public async Task<Response<PaginatedList<BlogResponse>>> Handle(GetBlogWithPaginationQuery request, CancellationToken cancellationToken)
         {
             var response = new Response<PaginatedList<BlogResponse>>();
-            List<Expression<Func<Category, bool>>> filter = new();
-            Func<IQueryable<Category>, IOrderedQueryable<Category>> orderBy = null;
+            List<Expression<Func<Blog, bool>>> filter = new();
+            Func<IQueryable<Blog>, IOrderedQueryable<Blog>> orderBy = null;
             string includedProperties = "Media";
             try
             {
@@ -55,7 +55,7 @@ namespace Application.Handlers.Blogs
                     }
                 }
                 var result = await _blogRepository.SearchAsync(request.SearchValue, request.PageIndex, request.PageSize, filter: filter, orderBy: orderBy,includeProperties: includedProperties);
-                var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Category>, PaginatedList<BlogResponse>>(result);
+                var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Blog>, PaginatedList<BlogResponse>>(result);
 
                 response = new Response<PaginatedList<BlogResponse>>(mappedResult)
                 {

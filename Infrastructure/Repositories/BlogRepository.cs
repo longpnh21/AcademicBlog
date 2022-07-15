@@ -12,13 +12,13 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class BlogRepository : BaseRepository<Category>, IBlogRepository
+    public class BlogRepository : BaseRepository<Blog>, IBlogRepository
     {
         public BlogRepository(AcademicBlogContext context) : base(context) { }
 
-        public async Task<Category> GetByIdAsync(int id, string includeProperties = "")
+        public async Task<Blog> GetByIdAsync(int id, string includeProperties = "")
         {
-            var query = _context.Set<Category>().AsQueryable().AsNoTracking();
+            var query = _context.Set<Blog>().AsQueryable().AsNoTracking();
 
             foreach (string includeProperty in includeProperties.Split
                 (new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -29,14 +29,14 @@ namespace Infrastructure.Repositories
             return await query.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public virtual async Task<PaginatedList<Category>> SearchAsync(string searchValue,
+        public virtual async Task<PaginatedList<Blog>> SearchAsync(string searchValue,
             int pageIndex = 1,
             int pageSize = 50,
-            List<Expression<Func<Category, bool>>> filter = null,
-            Func<IQueryable<Category>, IOrderedQueryable<Category>> orderBy = null,
+            List<Expression<Func<Blog, bool>>> filter = null,
+            Func<IQueryable<Blog>, IOrderedQueryable<Blog>> orderBy = null,
             string includeProperties = "")
         {
-            var query = _context.Set<Category>().AsQueryable().AsNoTracking().Include(e => e.BlogCategories).ThenInclude(b => b.Category).Include(e => e.BlogTags).ThenInclude(e => e.Tag).AsQueryable();
+            var query = _context.Set<Blog>().AsQueryable().AsNoTracking().Include(e => e.BlogCategories).ThenInclude(b => b.Category).Include(e => e.BlogTags).ThenInclude(e => e.Tag).AsQueryable();
             if (!string.IsNullOrWhiteSpace(searchValue))
             {
                 query = query.Where(e => e.BlogCategories.Any(x => x.Category.Name.Contains(searchValue) || e.BlogTags.Any(x => x.Tag.Name.Contains(searchValue))));
@@ -60,7 +60,7 @@ namespace Infrastructure.Repositories
                 query = orderBy(query);
             }
 
-            return await PaginatedList<Category>.ToPaginatedList(query, pageIndex, pageSize);
+            return await PaginatedList<Blog>.ToPaginatedList(query, pageIndex, pageSize);
         }
     }
 }

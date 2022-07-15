@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace Core.Entities
 {
-    public partial class Category
+    public partial class Blog
     {
-        public Category()
+        public Blog()
         {
             BlogCategories = new HashSet<BlogCategory>();
             BlogTags = new HashSet<BlogTag>();

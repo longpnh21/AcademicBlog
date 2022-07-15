@@ -30,7 +30,7 @@ namespace Application.Handlers.Blogs
             var response = new Response<BlogResponse>();
             try
             {
-                var entity = AcademicBlogMapper.Mapper.Map<Category>(request);
+                var entity = AcademicBlogMapper.Mapper.Map<Blog>(request);
                 if (entity is null)
                 {
                     throw new ApplicationException("Issue with mapper");

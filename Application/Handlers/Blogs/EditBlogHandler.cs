@@ -25,7 +25,7 @@ namespace Application.Handlers.Blogs
         public async Task<Response<BlogResponse>> Handle(EditBlogCommand request, CancellationToken cancellationToken)
         {
             var inDatabase = await _blogRepository.GetByIdAsync(request.Id);
-            var entity = AcademicBlogMapper.Mapper.Map<Category>(request);
+            var entity = AcademicBlogMapper.Mapper.Map<Blog>(request);
             var response = new Response<BlogResponse>();
             try
             {

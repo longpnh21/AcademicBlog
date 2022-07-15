@@ -9,12 +9,12 @@ namespace Application.Mappers
     {
         public BlogMappingProfile()
         {
-            CreateMap<Category, BlogResponse>().ReverseMap();
+            CreateMap<Blog, BlogResponse>().ReverseMap();
 
-            CreateMap<CreateBlogCommand, Category>()
+            CreateMap<CreateBlogCommand, Blog>()
                 .ForMember(entity => entity.Media, opt => opt.Ignore());
 
-            CreateMap<EditBlogCommand, Category>()
+            CreateMap<EditBlogCommand, Blog>()
                 .ForMember(entity => entity.Media, opt => opt.Ignore());
         }
     }

@@ -18,7 +18,7 @@ namespace Infrastructure.Data
         {
         }
 
-        public virtual DbSet<Category> Blogs { get; set; }
+        public virtual DbSet<Blog> Blogs { get; set; }
         public virtual DbSet<BlogCategory> BlogCategories { get; set; }
         public virtual DbSet<BlogTag> BlogTags { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
@@ -42,7 +42,7 @@ namespace Infrastructure.Data
 
             modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            modelBuilder.Entity<Category>(entity =>
+            modelBuilder.Entity<Blog>(entity =>
             {
                 entity.ToTable("Blog");
 
@@ -80,7 +80,7 @@ namespace Infrastructure.Data
                 entity.ToTable("BlogCategory");
 
                 entity.HasOne(d => d.Blog)
-                    .WithMany((System.Linq.Expressions.Expression<System.Func<Category, System.Collections.Generic.IEnumerable<BlogCategory>>>)(p => (System.Collections.Generic.IEnumerable<BlogCategory>)p.BlogCategories))
+                    .WithMany((System.Linq.Expressions.Expression<System.Func<Blog, System.Collections.Generic.IEnumerable<BlogCategory>>>)(p => (System.Collections.Generic.IEnumerable<BlogCategory>)p.BlogCategories))
                     .HasForeignKey(d => d.BlogId)
                     .HasConstraintName("FK_BlogCategory_Blog");
 
