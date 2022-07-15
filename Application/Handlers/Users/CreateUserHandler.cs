@@ -44,7 +44,10 @@ namespace Application.Handlers.Categories
                     await _userManager.AddToRoleAsync(user, userRole.Name);
                 }
 
-                response = new Response<UserResponse>(AcademicBlogMapper.Mapper.Map<UserResponse>(user));
+                response = new Response<UserResponse>(AcademicBlogMapper.Mapper.Map<UserResponse>(user))
+                {
+                    StatusCode = HttpStatusCode.OK
+                };
 
             }
             catch (Exception ex)

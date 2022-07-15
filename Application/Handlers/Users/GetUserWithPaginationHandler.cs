@@ -28,7 +28,7 @@ namespace Application.Handlers.Users
             try
             {
 
-                var result = await _userRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize);
+                var result = await _userRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, isDelete: request.IsDeleted);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<User>, PaginatedList<UserResponse>>(result);
 
                 response = new Response<PaginatedList<UserResponse>>(mappedResult)

@@ -6,8 +6,10 @@ using Core.Common;
 using Core.Entities;
 using Core.Enums;
 using Core.Repositories;
+using Infrastructure.Data;
 using MediatR;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
@@ -28,18 +30,18 @@ namespace Application.Handlers.Blogs
         public async Task<Response<PaginatedList<BlogResponse>>> Handle(GetBlogWithPaginationQuery request, CancellationToken cancellationToken)
         {
             var response = new Response<PaginatedList<BlogResponse>>();
-            Expression<Func<Blog, bool>> filter = null;
-            Func<IQueryable<Blog>, IOrderedQueryable<Blog>> orderBy = null;
+            List<Expression<Func<Category, bool>>> filter = new();
+            Func<IQueryable<Category>, IOrderedQueryable<Category>> orderBy = null;
             string includedProperties = "Media";
             try
             {
                 if (!string.IsNullOrWhiteSpace(request.UserId))
                 {
-                    filter = e => e.CreatorId == request.UserId;
+                    filter.Add(e => e.CreatorId == request.UserId);
                 }
                 if (!request.IsStatusVisable)
                 {
-                    filter = e => e.Status == BlogStatus.Available;
+                    filter.Add(e => e.Status == BlogStatus.Available);
                 }
                 if (string.IsNullOrWhiteSpace(request.OrderBy))
                 {
@@ -52,8 +54,8 @@ namespace Application.Handlers.Blogs
                         orderBy = e => e.OrderBy(x => x.ModifiedTime);
                     }
                 }
-                var result = await _blogRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter, orderBy: orderBy,includeProperties: includedProperties);
-                var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Blog>, PaginatedList<BlogResponse>>(result);
+                var result = await _blogRepository.SearchAsync(request.SearchValue, request.PageIndex, request.PageSize, filter: filter, orderBy: orderBy,includeProperties: includedProperties);
+                var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Category>, PaginatedList<BlogResponse>>(result);
 
                 response = new Response<PaginatedList<BlogResponse>>(mappedResult)
                 {

@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Core.Common;
+using Core.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ namespace Infrastructure.Data
         {
         }
 
-        public virtual DbSet<Blog> Blogs { get; set; }
+        public virtual DbSet<Category> Blogs { get; set; }
         public virtual DbSet<BlogCategory> BlogCategories { get; set; }
         public virtual DbSet<BlogTag> BlogTags { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
@@ -30,8 +31,6 @@ namespace Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
-
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             {
                 string tableName = entityType.GetTableName();
@@ -41,69 +40,76 @@ namespace Infrastructure.Data
                 }
             }
 
-            modelBuilder.Entity<Blog>(entity =>
-        {
-            entity.Property(e => e.ApproverId)
-                .HasMaxLength(300);
+            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
 
-            entity.Property(e => e.Content)
-                .IsRequired()
-                .HasMaxLength(4000);
-
-            entity.Property(e => e.CreatorId)
-                .IsRequired()
-                .HasMaxLength(300);
-
-            entity.HasOne(d => d.Approver)
-                .WithMany(p => p.BlogApprovers)
-                .HasForeignKey(d => d.ApproverId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Blogs_Users1");
-
-            entity.HasOne(d => d.Creator)
-                .WithMany(p => p.BlogCreators)
-                .HasForeignKey(d => d.CreatorId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Blogs_Users");
-        });
-
-            modelBuilder.Entity<BlogCategory>(entity =>
+            modelBuilder.Entity<Category>(entity =>
             {
-                entity.HasKey(e => new { e.BlogId, e.CategoryId });
+                entity.ToTable("Blog");
+
+                entity.Property(e => e.ApproverId).HasMaxLength(300);
+
+                entity.Property(e => e.Content)
+                    .IsRequired()
+                    .HasMaxLength(4000);
+
+                entity.Property(e => e.CreatorId)
+                    .IsRequired()
+                    .HasMaxLength(300);
+
+                entity.Property(e => e.ModifiedTime)
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.Approver)
+                    .WithMany(p => p.BlogApprovers)
+                    .HasForeignKey(d => d.ApproverId)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("FK_Blog_Users1");
+
+                entity.HasOne(d => d.Creator)
+                    .WithMany(p => p.BlogCreators)
+                    .HasForeignKey(d => d.CreatorId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Blog_Users");
+            });
+
+            modelBuilder.Entity<BlogCategory>((System.Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<BlogCategory>>)(entity =>
+            {
+                entity.HasKey(e => (new { e.BlogId, e.CategoryId }));
+
+                entity.ToTable("BlogCategory");
 
                 entity.HasOne(d => d.Blog)
-                    .WithMany(p => p.BlogCategories)
+                    .WithMany((System.Linq.Expressions.Expression<System.Func<Category, System.Collections.Generic.IEnumerable<BlogCategory>>>)(p => (System.Collections.Generic.IEnumerable<BlogCategory>)p.BlogCategories))
                     .HasForeignKey(d => d.BlogId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_BlogCategories_Blogs");
+                    .HasConstraintName("FK_BlogCategory_Blog");
 
                 entity.HasOne(d => d.Category)
-                    .WithMany(p => p.BlogCategories)
+                    .WithMany((System.Linq.Expressions.Expression<System.Func<Category, System.Collections.Generic.IEnumerable<BlogCategory>>>)(p => (System.Collections.Generic.IEnumerable<BlogCategory>)p.BlogCategories))
                     .HasForeignKey(d => d.CategoryId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_BlogCategories_Categories");
-            });
+                    .HasConstraintName("FK_BlogCategory_Category");
+            }));
 
             modelBuilder.Entity<BlogTag>(entity =>
             {
                 entity.HasKey(e => new { e.BlogId, e.TagId });
 
+                entity.ToTable("BlogTag");
+
                 entity.HasOne(d => d.Blog)
                     .WithMany(p => p.BlogTags)
                     .HasForeignKey(d => d.BlogId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_BlogTags_Blogs");
+                    .HasConstraintName("FK_BlogTag_Blog");
 
                 entity.HasOne(d => d.Tag)
                     .WithMany(p => p.BlogTags)
                     .HasForeignKey(d => d.TagId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_BlogTags_Tags");
+                    .HasConstraintName("FK_BlogTag_Tag");
             });
 
             modelBuilder.Entity<Category>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.ToTable("Category");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -112,6 +118,8 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<Comment>(entity =>
             {
+                entity.ToTable("Comment");
+
                 entity.Property(e => e.Content)
                     .IsRequired()
                     .HasMaxLength(1000);
@@ -123,47 +131,59 @@ namespace Infrastructure.Data
                 entity.HasOne(d => d.Blog)
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.BlogId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Comments_Blogs");
+                    .HasConstraintName("FK_Comment_Blog");
 
                 entity.HasOne(d => d.Reference)
                     .WithMany(p => p.InverseReference)
                     .HasForeignKey(d => d.ReferenceId)
-                    .HasConstraintName("FK_Comments_Comments");
+                    .HasConstraintName("FK_Comment_Comment");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Comments)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Comments_Users");
+                    .HasConstraintName("FK_Comment_Users");
             });
 
             modelBuilder.Entity<Media>(entity =>
             {
                 entity.Property(e => e.Link)
                     .IsRequired()
-                    .HasMaxLength(256);
+                    .HasMaxLength(300);
 
                 entity.HasOne(d => d.Blog)
                     .WithMany(p => p.Media)
                     .HasForeignKey(d => d.BlogId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Media_Blogs");
+                    .HasConstraintName("FK_Media_Blog");
             });
 
             modelBuilder.Entity<Tag>(entity =>
             {
+                entity.ToTable("Tag");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(50);
+                    .HasMaxLength(100);
             });
 
             modelBuilder.Entity<User>(entity =>
             {
+                entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
+
+                entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex")
+                    .IsUnique()
+                    .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
                 entity.Property(e => e.Id).HasMaxLength(300);
 
-                entity.Property(e => e.FullName)
-                    .HasMaxLength(500);
+                entity.Property(e => e.Email).HasMaxLength(256);
+
+                entity.Property(e => e.FullName).HasMaxLength(500);
+
+                entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
+
+                entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+
+                entity.Property(e => e.UserName).HasMaxLength(256);
             });
 
             modelBuilder.Entity<Vote>(entity =>
@@ -177,13 +197,11 @@ namespace Infrastructure.Data
                 entity.HasOne(d => d.Blog)
                     .WithMany(p => p.Votes)
                     .HasForeignKey(d => d.BlogId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Vote_Blogs");
+                    .HasConstraintName("FK_Vote_Blog");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Votes)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Vote_Users");
             });
 

@@ -42,6 +42,8 @@ namespace Api.ApiControllers.V1
                     return BadRequest();
                 }
 
+                //query.IsStatusVisable = false;
+
                 var user = (User)HttpContext.Items["User"];
                 //remove when release
                 var admin = await _userManager.FindByEmailAsync("administrator@academicblog.com");

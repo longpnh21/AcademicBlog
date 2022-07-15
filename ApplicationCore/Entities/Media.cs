@@ -1,18 +1,15 @@
-﻿#nullable disable
+﻿using System;
+using System.Collections.Generic;
 
-using System.ComponentModel.DataAnnotations;
+#nullable disable
 
 namespace Core.Entities
 {
-    public partial class Media
-    {
-        [Key]
+    public partial class Media    {
         public int Id { get; set; }
-        [Required]
         public int BlogId { get; set; }
-        [Required]
         public string Link { get; set; }
 
-        public virtual Blog Blog { get; set; }
+        public virtual Category Blog { get; set; }
     }
 }

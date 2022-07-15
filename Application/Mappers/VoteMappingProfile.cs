@@ -16,6 +16,7 @@ namespace Application.Mappers
         {
             CreateMap<Vote, VoteResponse>().ReverseMap();
             CreateMap<CreateVoteCommand, Vote>();
+            CreateMap<EditVoteCommand, Vote>();
         }
     }
 }

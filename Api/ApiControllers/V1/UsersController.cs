@@ -65,7 +65,6 @@ namespace Api.ApiControllers.V1
             }
         }
 
-        // GET api/Tags/5
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -81,6 +80,38 @@ namespace Api.ApiControllers.V1
                 }
 
                 var query = new GetUserWithIdQuery()
+                {
+                    Id = id
+                };
+
+                var result = await Mediator.Send(query);
+                return StatusCode((int)result.StatusCode, result);
+            }
+            catch (Exception ex)
+            {
+                var response = new Response<TagResponse>(ex.Message)
+                {
+                    StatusCode = HttpStatusCode.InternalServerError
+                };
+                return StatusCode((int)response.StatusCode, response);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteAsync(string id)
+        {
+            try
+            {
+                if (id == null)
+                {
+                    return BadRequest();
+                }
+
+                var query = new DeleteUserCommand()
                 {
                     Id = id
                 };

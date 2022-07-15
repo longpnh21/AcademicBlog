@@ -7,6 +7,8 @@ using Core.Entities;
 using Core.Repositories;
 using MediatR;
 using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +29,12 @@ namespace Application.Handlers.Categories
             var response = new Response<PaginatedList<CategoryResponse>>();
             try
             {
-                var result = await _categoryRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize);
+                var filter = new List<Expression<Func<Category, bool>>>();
+                if (string.IsNullOrWhiteSpace(request.SearchValue))
+                {
+                    filter.Add(e => e.Name.Contains(request.SearchValue));
+                }
+                var result = await _categoryRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Category>, PaginatedList<CategoryResponse>>(result);
 
                 response = new Response<PaginatedList<CategoryResponse>>(mappedResult)

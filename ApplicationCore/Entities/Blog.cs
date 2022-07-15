@@ -1,15 +1,14 @@
 ﻿using Core.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
 namespace Core.Entities
 {
-    public partial class Blog
+    public partial class Category
     {
-        public Blog()
+        public Category()
         {
             BlogCategories = new HashSet<BlogCategory>();
             BlogTags = new HashSet<BlogTag>();
@@ -18,18 +17,14 @@ namespace Core.Entities
             Votes = new HashSet<Vote>();
         }
 
-        [Key]
         public int Id { get; set; }
-        [MaxLength(4000)]
-        [Required]
         public string Content { get; set; }
-        [Required]
         public BlogStatus Status { get; set; }
-        [Required]
         public string CreatorId { get; set; }
-        public string? ApproverId { get; set; }
-        public DateTime ModifiedTime { get; set; } = DateTime.Now;
-        public virtual User? Approver { get; set; }
+        public string ApproverId { get; set; }
+        public DateTime ModifiedTime { get; set; }
+
+        public virtual User Approver { get; set; }
         public virtual User Creator { get; set; }
         public virtual ICollection<BlogCategory> BlogCategories { get; set; }
         public virtual ICollection<BlogTag> BlogTags { get; set; }

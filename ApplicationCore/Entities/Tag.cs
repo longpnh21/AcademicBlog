@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 
 #nullable disable
 
@@ -12,10 +12,7 @@ namespace Core.Entities
             BlogTags = new HashSet<BlogTag>();
         }
 
-        [Key]
         public int Id { get; set; }
-        [Required]
-        [MaxLength(50)]
         public string Name { get; set; }
 
         public virtual ICollection<BlogTag> BlogTags { get; set; }

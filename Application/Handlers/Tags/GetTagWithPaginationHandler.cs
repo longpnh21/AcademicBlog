@@ -7,6 +7,8 @@ using Core.Entities;
 using Core.Repositories;
 using MediatR;
 using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,7 +30,12 @@ namespace Application.Handlers.Tags
 
             try
             {
-                var result = await _tagRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize);
+                var filter = new List<Expression<Func<Tag, bool>>>();
+                if (string.IsNullOrWhiteSpace(request.SearchValue))
+                {
+                    filter.Add(e => e.Name.Contains(request.SearchValue));
+                }
+                var result = await _tagRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Tag>, PaginatedList<TagResponse>>(result);
 
                 response = new Response<PaginatedList<TagResponse>>(mappedResult)

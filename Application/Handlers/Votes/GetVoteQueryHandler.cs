@@ -32,10 +32,11 @@ namespace Application.Handlers.Votes
 
             try
             {
-                Expression<Func<Vote, bool>> filter = e => e.BlogId == request.BlogId;
+                List<Expression<Func<Vote, bool>>> filter = new();
+                filter.Add(e => e.BlogId == request.BlogId);
                 if (request.Type is not null)
                 {
-                    filter = e => e.BlogId == request.BlogId && e.Type == request.Type;
+                    filter.Add(e => e.BlogId == request.BlogId && e.Type == request.Type);
                 }
                 
                 var result = await _voteRepository.GetAllAsync(filter);

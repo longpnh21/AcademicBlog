@@ -8,6 +8,7 @@ using Core.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,7 +29,9 @@ namespace Application.Handlers.Comments
             var response = new Response<PaginatedList<CommentResponse>>();
             try
             {
-                var result = await _commentRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, c => c.ReferenceId == null);
+                var filter = new List<Expression<Func<Comment, bool>>>();
+                filter.Add(e => e.ReferenceId == null);
+                var result = await _commentRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Comment>, PaginatedList<CommentResponse>>(result);
 
                 foreach (CommentResponse comment in mappedResult)

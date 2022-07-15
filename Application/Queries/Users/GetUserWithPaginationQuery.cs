@@ -12,5 +12,7 @@ namespace Application.Queries.Users
         public int PageIndex { get; set; } = 1;
         [Range(1, int.MaxValue)]
         public int PageSize { get; set; } = 10;
+        public string SearchValue { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

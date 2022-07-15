@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AcademicBlogContext))]
-    [Migration("20220516180640_add identity")]
-    partial class addidentity
+    [Migration("20220714165412_InitDb")]
+    partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,6 @@ namespace Infrastructure.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ApproverId")
-                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -44,6 +43,11 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
+                    b.Property<DateTime>("ModifiedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -53,7 +57,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Blogs");
+                    b.ToTable("Blog");
                 });
 
             modelBuilder.Entity("Core.Entities.BlogCategory", b =>
@@ -68,7 +72,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("BlogCategories");
+                    b.ToTable("BlogCategory");
                 });
 
             modelBuilder.Entity("Core.Entities.BlogTag", b =>
@@ -83,13 +87,15 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("BlogTags");
+                    b.ToTable("BlogTag");
                 });
 
             modelBuilder.Entity("Core.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -98,7 +104,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("Core.Entities.Comment", b =>
@@ -132,7 +138,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comment");
                 });
 
             modelBuilder.Entity("Core.Entities.Media", b =>
@@ -147,14 +153,64 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Link")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BlogId");
 
                     b.ToTable("Media");
+                });
+
+            modelBuilder.Entity("Core.Entities.Role", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "NormalizedName" }, "RoleNameIndex")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex1")
+                        .HasFilter("([NormalizedName] IS NOT NULL)");
+
+                    b.ToTable("Role");
+                });
+
+            modelBuilder.Entity("Core.Entities.RoleClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "RoleId" }, "IX_RoleClaims_RoleId");
+
+                    b.ToTable("RoleClaim");
                 });
 
             modelBuilder.Entity("Core.Entities.Tag", b =>
@@ -166,12 +222,12 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tag");
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>
@@ -195,9 +251,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -242,7 +300,104 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex(new[] { "NormalizedEmail" }, "EmailIndex");
+
+                    b.HasIndex(new[] { "NormalizedUserName" }, "UserNameIndex")
+                        .IsUnique()
+                        .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserClaim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "UserId" }, "IX_UserClaims_UserId");
+
+                    b.ToTable("UserClaim");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserLogin", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex(new[] { "UserId" }, "IX_UserLogins_UserId");
+
+                    b.ToTable("UserLogin");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserRole", b =>
+                {
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex(new[] { "RoleId" }, "IX_UserRoles_RoleId");
+
+                    b.ToTable("UserRole");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserToken", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserToken");
                 });
 
             modelBuilder.Entity("Core.Entities.Vote", b =>
@@ -310,7 +465,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("IX_RoleClaims_RoleId1");
 
                     b.ToTable("RoleClaims");
                 });
@@ -334,7 +490,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_UserClaims_UserId1");
 
                     b.ToTable("UserClaims");
                 });
@@ -356,7 +513,8 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("IX_UserLogins_UserId1");
 
                     b.ToTable("UserLogins");
                 });
@@ -400,13 +558,13 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.User", "Approver")
                         .WithMany("BlogApprovers")
                         .HasForeignKey("ApproverId")
-                        .HasConstraintName("FK_Blogs_Users1")
-                        .IsRequired();
+                        .HasConstraintName("FK_Blog_Users1")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Core.Entities.User", "Creator")
                         .WithMany("BlogCreators")
                         .HasForeignKey("CreatorId")
-                        .HasConstraintName("FK_Blogs_Users")
+                        .HasConstraintName("FK_Blog_Users")
                         .IsRequired();
 
                     b.Navigation("Approver");
@@ -419,13 +577,15 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("BlogCategories")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_BlogCategories_Blogs")
+                        .HasConstraintName("FK_BlogCategory_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Category", "Category")
                         .WithMany("BlogCategories")
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_BlogCategories_Categories")
+                        .HasConstraintName("FK_BlogCategory_Category")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");
@@ -438,13 +598,15 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("BlogTags")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_BlogTags_Blogs")
+                        .HasConstraintName("FK_BlogTag_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Tag", "Tag")
                         .WithMany("BlogTags")
                         .HasForeignKey("TagId")
-                        .HasConstraintName("FK_BlogTags_Tags")
+                        .HasConstraintName("FK_BlogTag_Tag")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");
@@ -457,18 +619,20 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("Comments")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_Comments_Blogs")
+                        .HasConstraintName("FK_Comment_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Comment", "Reference")
                         .WithMany("InverseReference")
                         .HasForeignKey("ReferenceId")
-                        .HasConstraintName("FK_Comments_Comments");
+                        .HasConstraintName("FK_Comment_Comment");
 
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK_Comments_Users")
+                        .HasConstraintName("FK_Comment_Users")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");
@@ -483,10 +647,74 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("Media")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_Media_Blogs")
+                        .HasConstraintName("FK_Media_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");
+                });
+
+            modelBuilder.Entity("Core.Entities.RoleClaim", b =>
+                {
+                    b.HasOne("Core.Entities.Role", "Role")
+                        .WithMany("RoleClaims")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserClaim", b =>
+                {
+                    b.HasOne("Core.Entities.User", "User")
+                        .WithMany("UserClaims")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserLogin", b =>
+                {
+                    b.HasOne("Core.Entities.User", "User")
+                        .WithMany("UserLogins")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserRole", b =>
+                {
+                    b.HasOne("Core.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Core.Entities.UserToken", b =>
+                {
+                    b.HasOne("Core.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Entities.Vote", b =>
@@ -494,13 +722,15 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("Votes")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_Vote_Blogs")
+                        .HasConstraintName("FK_Vote_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany("Votes")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Vote_Users")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");
@@ -582,6 +812,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("InverseReference");
                 });
 
+            modelBuilder.Entity("Core.Entities.Role", b =>
+                {
+                    b.Navigation("RoleClaims");
+                });
+
             modelBuilder.Entity("Core.Entities.Tag", b =>
                 {
                     b.Navigation("BlogTags");
@@ -594,6 +829,10 @@ namespace Infrastructure.Migrations
                     b.Navigation("BlogCreators");
 
                     b.Navigation("Comments");
+
+                    b.Navigation("UserClaims");
+
+                    b.Navigation("UserLogins");
 
                     b.Navigation("Votes");
                 });

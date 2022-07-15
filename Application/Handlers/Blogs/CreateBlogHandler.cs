@@ -30,18 +30,21 @@ namespace Application.Handlers.Blogs
             var response = new Response<BlogResponse>();
             try
             {
-                var entity = AcademicBlogMapper.Mapper.Map<Blog>(request);
+                var entity = AcademicBlogMapper.Mapper.Map<Category>(request);
                 if (entity is null)
                 {
                     throw new ApplicationException("Issue with mapper");
                 }
 
-                foreach (var media in request.Media)
+                if (request.Media != null)
                 {
-                    string link = await _uploadService.UploadFileAsync(media);
-                    if (link is not null)
+                    foreach (var media in request.Media)
                     {
-                        entity.Media.Add(new Media() { Link = link });
+                        string link = await _uploadService.UploadFileAsync(media);
+                        if (link is not null)
+                        {
+                            entity.Media.Add(new Media() { Link = link });
+                        }
                     }
                 }
 
