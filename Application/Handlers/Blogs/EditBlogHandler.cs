@@ -39,7 +39,6 @@ namespace Application.Handlers.Blogs
                 }
 
                 entity.Status = BlogStatus.Pending;
-
                 await _blogRepository.UpdateAsync(entity);
                 response = new Response<BlogResponse>()
                 {

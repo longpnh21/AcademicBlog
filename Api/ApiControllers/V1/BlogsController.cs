@@ -142,7 +142,7 @@ namespace Api.ApiControllers.V1
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> PutAsync(int id, [FromBody] EditBlogCommand command)
+        public async Task<IActionResult> PutAsync(int id, [FromForm] EditBlogCommand command)
         {
             try
             {
@@ -155,6 +155,11 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
+                var user = (User)HttpContext.Items["User"];
+                //remove when release
+                var admin = await _userManager.FindByEmailAsync("administrator@academicblog.com");
+                command.CreatorId = user.Id ?? admin.Id;
 
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);

@@ -31,7 +31,7 @@ namespace Application.Handlers.Tags
             try
             {
                 var filter = new List<Expression<Func<Tag, bool>>>();
-                if (string.IsNullOrWhiteSpace(request.SearchValue))
+                if (!string.IsNullOrWhiteSpace(request.SearchValue))
                 {
                     filter.Add(e => e.Name.Contains(request.SearchValue));
                 }

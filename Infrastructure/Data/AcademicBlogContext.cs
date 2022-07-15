@@ -44,7 +44,7 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<Blog>(entity =>
             {
-                entity.ToTable("Blog");
+                entity.ToTable("Blogs");
 
                 entity.Property(e => e.ApproverId).HasMaxLength(300);
 
@@ -73,28 +73,28 @@ namespace Infrastructure.Data
                     .HasConstraintName("FK_Blog_Users");
             });
 
-            modelBuilder.Entity<BlogCategory>((System.Action<Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<BlogCategory>>)(entity =>
+            modelBuilder.Entity<BlogCategory>(entity =>
             {
                 entity.HasKey(e => (new { e.BlogId, e.CategoryId }));
 
-                entity.ToTable("BlogCategory");
+                entity.ToTable("BlogCategories");
 
                 entity.HasOne(d => d.Blog)
-                    .WithMany((System.Linq.Expressions.Expression<System.Func<Blog, System.Collections.Generic.IEnumerable<BlogCategory>>>)(p => (System.Collections.Generic.IEnumerable<BlogCategory>)p.BlogCategories))
+                    .WithMany(p => p.BlogCategories)
                     .HasForeignKey(d => d.BlogId)
                     .HasConstraintName("FK_BlogCategory_Blog");
 
                 entity.HasOne(d => d.Category)
-                    .WithMany((System.Linq.Expressions.Expression<System.Func<Category, System.Collections.Generic.IEnumerable<BlogCategory>>>)(p => (System.Collections.Generic.IEnumerable<BlogCategory>)p.BlogCategories))
+                    .WithMany(p => p.BlogCategories)
                     .HasForeignKey(d => d.CategoryId)
                     .HasConstraintName("FK_BlogCategory_Category");
-            }));
+            });
 
             modelBuilder.Entity<BlogTag>(entity =>
             {
                 entity.HasKey(e => new { e.BlogId, e.TagId });
 
-                entity.ToTable("BlogTag");
+                entity.ToTable("BlogTags");
 
                 entity.HasOne(d => d.Blog)
                     .WithMany(p => p.BlogTags)
@@ -109,7 +109,7 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<Category>(entity =>
             {
-                entity.ToTable("Category");
+                entity.ToTable("Categories");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -118,7 +118,7 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<Comment>(entity =>
             {
-                entity.ToTable("Comment");
+                entity.ToTable("Comments");
 
                 entity.Property(e => e.Content)
                     .IsRequired()
@@ -158,7 +158,7 @@ namespace Infrastructure.Data
 
             modelBuilder.Entity<Tag>(entity =>
             {
-                entity.ToTable("Tag");
+                entity.ToTable("Tags");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -190,7 +190,7 @@ namespace Infrastructure.Data
             {
                 entity.HasKey(e => new { e.UserId, e.BlogId });
 
-                entity.ToTable("Vote");
+                entity.ToTable("Votes");
 
                 entity.Property(e => e.UserId).HasMaxLength(300);
 

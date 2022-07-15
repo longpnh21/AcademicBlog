@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AcademicBlogContext))]
-    [Migration("20220714165412_InitDb")]
+    [Migration("20220715104410_InitDb")]
     partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,7 +57,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Blog");
+                    b.ToTable("Blogs");
                 });
 
             modelBuilder.Entity("Core.Entities.BlogCategory", b =>
@@ -72,7 +72,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("BlogCategory");
+                    b.ToTable("BlogCategories");
                 });
 
             modelBuilder.Entity("Core.Entities.BlogTag", b =>
@@ -87,7 +87,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.ToTable("BlogTag");
+                    b.ToTable("BlogTags");
                 });
 
             modelBuilder.Entity("Core.Entities.Category", b =>
@@ -104,7 +104,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Category");
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("Core.Entities.Comment", b =>
@@ -138,7 +138,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("Core.Entities.Media", b =>
@@ -163,56 +163,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Media");
                 });
 
-            modelBuilder.Entity("Core.Entities.Role", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "NormalizedName" }, "RoleNameIndex")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex1")
-                        .HasFilter("([NormalizedName] IS NOT NULL)");
-
-                    b.ToTable("Role");
-                });
-
-            modelBuilder.Entity("Core.Entities.RoleClaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "RoleId" }, "IX_RoleClaims_RoleId");
-
-                    b.ToTable("RoleClaim");
-                });
-
             modelBuilder.Entity("Core.Entities.Tag", b =>
                 {
                     b.Property<int>("Id")
@@ -227,7 +177,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tag");
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("Core.Entities.User", b =>
@@ -309,97 +259,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Core.Entities.UserClaim", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "UserId" }, "IX_UserClaims_UserId");
-
-                    b.ToTable("UserClaim");
-                });
-
-            modelBuilder.Entity("Core.Entities.UserLogin", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.HasKey("LoginProvider", "ProviderKey");
-
-                    b.HasIndex(new[] { "UserId" }, "IX_UserLogins_UserId");
-
-                    b.ToTable("UserLogin");
-                });
-
-            modelBuilder.Entity("Core.Entities.UserRole", b =>
-                {
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex(new[] { "RoleId" }, "IX_UserRoles_RoleId");
-
-                    b.ToTable("UserRole");
-                });
-
-            modelBuilder.Entity("Core.Entities.UserToken", b =>
-                {
-                    b.Property<string>("LoginProvider")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserToken");
-                });
-
             modelBuilder.Entity("Core.Entities.Vote", b =>
                 {
                     b.Property<string>("UserId")
@@ -416,7 +275,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("BlogId");
 
-                    b.ToTable("Vote");
+                    b.ToTable("Votes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -465,8 +324,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId")
-                        .HasDatabaseName("IX_RoleClaims_RoleId1");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("RoleClaims");
                 });
@@ -490,8 +348,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_UserClaims_UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserClaims");
                 });
@@ -513,8 +370,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.HasIndex("UserId")
-                        .HasDatabaseName("IX_UserLogins_UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserLogins");
                 });
@@ -654,69 +510,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Blog");
                 });
 
-            modelBuilder.Entity("Core.Entities.RoleClaim", b =>
-                {
-                    b.HasOne("Core.Entities.Role", "Role")
-                        .WithMany("RoleClaims")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("Core.Entities.UserClaim", b =>
-                {
-                    b.HasOne("Core.Entities.User", "User")
-                        .WithMany("UserClaims")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Core.Entities.UserLogin", b =>
-                {
-                    b.HasOne("Core.Entities.User", "User")
-                        .WithMany("UserLogins")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Core.Entities.UserRole", b =>
-                {
-                    b.HasOne("Core.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Core.Entities.UserToken", b =>
-                {
-                    b.HasOne("Core.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Core.Entities.Vote", b =>
                 {
                     b.HasOne("Core.Entities.Blog", "Blog")
@@ -812,11 +605,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("InverseReference");
                 });
 
-            modelBuilder.Entity("Core.Entities.Role", b =>
-                {
-                    b.Navigation("RoleClaims");
-                });
-
             modelBuilder.Entity("Core.Entities.Tag", b =>
                 {
                     b.Navigation("BlogTags");
@@ -829,10 +617,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("BlogCreators");
 
                     b.Navigation("Comments");
-
-                    b.Navigation("UserClaims");
-
-                    b.Navigation("UserLogins");
 
                     b.Navigation("Votes");
                 });

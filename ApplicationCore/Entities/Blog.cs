@@ -22,7 +22,7 @@ namespace Core.Entities
         public BlogStatus Status { get; set; }
         public string CreatorId { get; set; }
         public string ApproverId { get; set; }
-        public DateTime ModifiedTime { get; set; }
+        public DateTime ModifiedTime { get; set; } = DateTime.Now;
 
         public virtual User Approver { get; set; }
         public virtual User Creator { get; set; }

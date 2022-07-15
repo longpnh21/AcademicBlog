@@ -39,7 +39,7 @@ namespace Infrastructure.Repositories.Base
         {
             var query = _context.Set<T>().AsQueryable().AsNoTracking();
 
-            if (filter is not null) 
+            if (filter is not null && filter.Count() > 0) 
             {
                 foreach (var exp in filter)
                 {

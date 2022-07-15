@@ -30,7 +30,7 @@ namespace Application.Handlers.Categories
             try
             {
                 var filter = new List<Expression<Func<Category, bool>>>();
-                if (string.IsNullOrWhiteSpace(request.SearchValue))
+                if (!string.IsNullOrWhiteSpace(request.SearchValue))
                 {
                     filter.Add(e => e.Name.Contains(request.SearchValue));
                 }

@@ -8,7 +8,7 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Category",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -17,21 +17,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Category", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Role",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Role", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -49,7 +35,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tag",
+                name: "Tags",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -58,7 +44,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tag", x => x.Id);
+                    table.PrimaryKey("PK_Tags", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -89,27 +75,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleClaim",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RoleClaim", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RoleClaim_Role_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "RoleClaims",
                 columns: table => new
                 {
@@ -131,7 +96,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Blog",
+                name: "Blogs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -144,7 +109,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Blog", x => x.Id);
+                    table.PrimaryKey("PK_Blogs", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Blog_Users",
                         column: x => x.CreatorId,
@@ -157,27 +122,6 @@ namespace Infrastructure.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserClaim",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserClaim", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_UserClaim_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -202,26 +146,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserLogin",
-                columns: table => new
-                {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_UserLogin", x => new { x.LoginProvider, x.ProviderKey });
-                    table.ForeignKey(
-                        name: "FK_UserLogin_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserLogins",
                 columns: table => new
                 {
@@ -235,29 +159,6 @@ namespace Infrastructure.Migrations
                     table.PrimaryKey("PK_UserLogins", x => new { x.LoginProvider, x.ProviderKey });
                     table.ForeignKey(
                         name: "FK_UserLogins_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserRole",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_UserRole_Role_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Role",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_UserRole_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -289,25 +190,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserToken",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_UserToken_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserTokens",
                 columns: table => new
                 {
@@ -328,7 +210,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BlogCategory",
+                name: "BlogCategories",
                 columns: table => new
                 {
                     BlogId = table.Column<int>(type: "int", nullable: false),
@@ -336,23 +218,23 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BlogCategory", x => new { x.BlogId, x.CategoryId });
+                    table.PrimaryKey("PK_BlogCategories", x => new { x.BlogId, x.CategoryId });
                     table.ForeignKey(
                         name: "FK_BlogCategory_Blog",
                         column: x => x.BlogId,
-                        principalTable: "Blog",
+                        principalTable: "Blogs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_BlogCategory_Category",
                         column: x => x.CategoryId,
-                        principalTable: "Category",
+                        principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "BlogTag",
+                name: "BlogTags",
                 columns: table => new
                 {
                     BlogId = table.Column<int>(type: "int", nullable: false),
@@ -360,23 +242,23 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BlogTag", x => new { x.BlogId, x.TagId });
+                    table.PrimaryKey("PK_BlogTags", x => new { x.BlogId, x.TagId });
                     table.ForeignKey(
                         name: "FK_BlogTag_Blog",
                         column: x => x.BlogId,
-                        principalTable: "Blog",
+                        principalTable: "Blogs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_BlogTag_Tag",
                         column: x => x.TagId,
-                        principalTable: "Tag",
+                        principalTable: "Tags",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Comment",
+                name: "Comments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -388,17 +270,17 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Comment", x => x.Id);
+                    table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Comment_Blog",
                         column: x => x.BlogId,
-                        principalTable: "Blog",
+                        principalTable: "Blogs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Comment_Comment",
                         column: x => x.ReferenceId,
-                        principalTable: "Comment",
+                        principalTable: "Comments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -424,13 +306,13 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Media_Blog",
                         column: x => x.BlogId,
-                        principalTable: "Blog",
+                        principalTable: "Blogs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Vote",
+                name: "Votes",
                 columns: table => new
                 {
                     UserId = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
@@ -439,11 +321,11 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Vote", x => new { x.UserId, x.BlogId });
+                    table.PrimaryKey("PK_Votes", x => new { x.UserId, x.BlogId });
                     table.ForeignKey(
                         name: "FK_Vote_Blog",
                         column: x => x.BlogId,
-                        principalTable: "Blog",
+                        principalTable: "Blogs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -455,38 +337,38 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Blog_ApproverId",
-                table: "Blog",
-                column: "ApproverId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Blog_CreatorId",
-                table: "Blog",
-                column: "CreatorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BlogCategory_CategoryId",
-                table: "BlogCategory",
+                name: "IX_BlogCategories_CategoryId",
+                table: "BlogCategories",
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BlogTag_TagId",
-                table: "BlogTag",
+                name: "IX_Blogs_ApproverId",
+                table: "Blogs",
+                column: "ApproverId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Blogs_CreatorId",
+                table: "Blogs",
+                column: "CreatorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BlogTags_TagId",
+                table: "BlogTags",
                 column: "TagId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_BlogId",
-                table: "Comment",
+                name: "IX_Comments_BlogId",
+                table: "Comments",
                 column: "BlogId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_ReferenceId",
-                table: "Comment",
+                name: "IX_Comments_ReferenceId",
+                table: "Comments",
                 column: "ReferenceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comment_UserId",
-                table: "Comment",
+                name: "IX_Comments_UserId",
+                table: "Comments",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -495,19 +377,7 @@ namespace Infrastructure.Migrations
                 column: "BlogId");
 
             migrationBuilder.CreateIndex(
-                name: "RoleNameIndex1",
-                table: "Role",
-                column: "NormalizedName",
-                unique: true,
-                filter: "([NormalizedName] IS NOT NULL)");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
-                table: "RoleClaim",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RoleClaims_RoleId1",
                 table: "RoleClaims",
                 column: "RoleId");
 
@@ -520,33 +390,13 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
-                table: "UserClaim",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserClaims_UserId1",
                 table: "UserClaims",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLogins_UserId",
-                table: "UserLogin",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserLogins_UserId1",
                 table: "UserLogins",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRole_UserId",
-                table: "UserRole",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserRoles_RoleId",
-                table: "UserRole",
-                column: "RoleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserRoles_RoleId",
@@ -566,77 +416,54 @@ namespace Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserToken_UserId",
-                table: "UserToken",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Vote_BlogId",
-                table: "Vote",
+                name: "IX_Votes_BlogId",
+                table: "Votes",
                 column: "BlogId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "BlogCategory");
+                name: "BlogCategories");
 
             migrationBuilder.DropTable(
-                name: "BlogTag");
+                name: "BlogTags");
 
             migrationBuilder.DropTable(
-                name: "Comment");
+                name: "Comments");
 
             migrationBuilder.DropTable(
                 name: "Media");
 
             migrationBuilder.DropTable(
-                name: "RoleClaim");
-
-            migrationBuilder.DropTable(
                 name: "RoleClaims");
-
-            migrationBuilder.DropTable(
-                name: "UserClaim");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
 
             migrationBuilder.DropTable(
-                name: "UserLogin");
-
-            migrationBuilder.DropTable(
                 name: "UserLogins");
-
-            migrationBuilder.DropTable(
-                name: "UserRole");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
-                name: "UserToken");
-
-            migrationBuilder.DropTable(
                 name: "UserTokens");
 
             migrationBuilder.DropTable(
-                name: "Vote");
+                name: "Votes");
 
             migrationBuilder.DropTable(
-                name: "Category");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Tag");
-
-            migrationBuilder.DropTable(
-                name: "Role");
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Blog");
+                name: "Blogs");
 
             migrationBuilder.DropTable(
                 name: "Users");
