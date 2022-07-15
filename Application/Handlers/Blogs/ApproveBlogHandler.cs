@@ -43,7 +43,7 @@ namespace Application.Handlers.Blogs
                 }
 
                 entity.ApproverId = approver.Id;
-                entity.Status = BlogStatus.Available;
+                entity.Status = request.Status;
 
                 await _blogRepository.UpdateAsync(entity);
 
