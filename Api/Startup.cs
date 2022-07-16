@@ -102,6 +102,7 @@ namespace Api
             //Service
             services.AddTransient<IUploadService, FirebaseUploadService>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<ISendMailService, SendEmailService>();
 
             //Repository
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
