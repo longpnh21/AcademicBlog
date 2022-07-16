@@ -2,16 +2,13 @@
 using Application.Queries.Votes;
 using Application.Response;
 using Application.Response.Base;
-using Core.Common;
 using Core.Entities;
 using Core.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,7 +35,7 @@ namespace Application.Handlers.Votes
                 {
                     filter.Add(e => e.BlogId == request.BlogId && e.Type == request.Type);
                 }
-                
+
                 var result = await _voteRepository.GetAllAsync(filter);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<IEnumerable<Vote>, List<VoteResponse>>(result);
 

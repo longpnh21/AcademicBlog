@@ -3,7 +3,7 @@ using Core.Repositories.Base;
 
 namespace Core.Repositories
 {
-    public interface IVoteRepository : IRepository<Vote>
+    public interface IBlogTagRepository : IRepository<BlogTag>
     {
     }
 }

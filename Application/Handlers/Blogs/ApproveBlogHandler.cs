@@ -2,7 +2,6 @@
 using Application.Response;
 using Application.Response.Base;
 using Core.Entities;
-using Core.Enums;
 using Core.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Identity;

@@ -3,14 +3,12 @@ using Application.Queries.Votes;
 using Application.Response;
 using Application.Response.Base;
 using Core.Entities;
-using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Api.ApiControllers.V1

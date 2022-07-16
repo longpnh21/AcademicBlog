@@ -43,7 +43,7 @@ namespace Application.Handlers.Comments
                     var replyResult = await _commentRepository.GetAllReply(comment.Id);
                     comment.Reply = AcademicBlogMapper.Mapper.Map<IEnumerable<Comment>, IEnumerable<ReplyResponse>>(replyResult);
                 }
-                
+
 
                 response = new Response<PaginatedList<CommentResponse>>(mappedResult)
                 {

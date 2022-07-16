@@ -82,7 +82,7 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
-                
+
                 var result = await Mediator.Send(command);
                 return StatusCode((int)result.StatusCode, result);
             }

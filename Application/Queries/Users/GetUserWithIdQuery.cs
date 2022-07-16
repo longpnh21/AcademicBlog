@@ -1,7 +1,6 @@
 ﻿using Application.Response;
 using Application.Response.Base;
 using MediatR;
-using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.Queries.Users

@@ -1,5 +1,4 @@
 ﻿using Application.Commands.Users;
-using Application.Mappers;
 using Application.Response;
 using Application.Response.Base;
 using Core.Entities;
@@ -29,7 +28,7 @@ namespace Application.Handlers.Users
             var response = new Response<UserResponse>();
             try
             {
-                var result = await _userRepository.GetByIdAsync(request.Id,true);
+                var result = await _userRepository.GetByIdAsync(request.Id, true);
                 if (result is null)
                 {
                     throw new NullReferenceException("Not found user");

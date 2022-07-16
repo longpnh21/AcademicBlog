@@ -97,7 +97,7 @@ namespace Api
             services.AddCors();
 
             //Blog
-            services.AddMediatR(typeof(CreateBlogHandler).GetTypeInfo().Assembly);
+            services.AddMediatR(typeof(CreateBlogCommandHandler).GetTypeInfo().Assembly);
 
             //Service
             services.AddTransient<IUploadService, FirebaseUploadService>();
@@ -112,6 +112,8 @@ namespace Api
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IVoteRepository, VoteRepository>();
+            services.AddScoped<IBlogTagRepository, BlogTagRepository>();
+            services.AddScoped<IBlogCategoryRepository, BlogCategoryRepository>();
 
             services.AddSwaggerGen(c =>
             {

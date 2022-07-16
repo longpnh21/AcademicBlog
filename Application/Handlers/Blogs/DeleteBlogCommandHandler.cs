@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace Application.Handlers.Blogs
 {
-    public class DeleteBlogHandler : IRequestHandler<DeleteBlogCommand, Response<BlogResponse>>
+    public class DeleteBlogCommandHandler : IRequestHandler<DeleteBlogCommand, Response<BlogResponse>>
     {
         private readonly IBlogRepository _blogRepository;
 
-        public DeleteBlogHandler(IBlogRepository blogRepository)
+        public DeleteBlogCommandHandler(IBlogRepository blogRepository)
         {
             _blogRepository = blogRepository;
         }

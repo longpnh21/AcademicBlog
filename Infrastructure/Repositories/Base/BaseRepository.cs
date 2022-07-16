@@ -32,6 +32,12 @@ namespace Infrastructure.Repositories.Base
             await _context.SaveChangesAsync();
         }
 
+        public virtual async Task DeleteAsync(IEnumerable<T> entity)
+        {
+            _context.Set<T>().RemoveRange(entity);
+            await _context.SaveChangesAsync();
+        }
+
         public virtual async Task<IEnumerable<T>> GetAllAsync(
             List<Expression<Func<T, bool>>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
@@ -39,7 +45,7 @@ namespace Infrastructure.Repositories.Base
         {
             var query = _context.Set<T>().AsQueryable().AsNoTracking();
 
-            if (filter is not null && filter.Count() > 0) 
+            if (filter is not null && filter.Count() > 0)
             {
                 foreach (var exp in filter)
                 {
@@ -96,6 +102,7 @@ namespace Infrastructure.Repositories.Base
 
         public virtual async Task<T> UpdateAsync(T entity)
         {
+            _context.Entry(entity).State = EntityState.Detached;
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
             return entity;

@@ -5,9 +5,9 @@ using Infrastructure.Repositories.Base;
 
 namespace Infrastructure.Repositories
 {
-    public class VoteRepository : BaseRepository<Vote>, IVoteRepository
+    public class BlogTagRepository : BaseRepository<BlogTag>, IBlogTagRepository
     {
-        public VoteRepository(AcademicBlogContext context) : base(context)
+        public BlogTagRepository(AcademicBlogContext context) : base(context)
         {
         }
     }

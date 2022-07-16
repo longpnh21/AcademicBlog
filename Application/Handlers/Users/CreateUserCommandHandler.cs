@@ -9,7 +9,6 @@ using Core.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -46,7 +45,7 @@ namespace Application.Handlers.Categories
                 {
                     throw new ArgumentNullException("Not found role: " + request.Role);
                 }
-                
+
                 var password = CreatePassword(8);
                 var result = await _userManager.CreateAsync(user, password);
                 await _userManager.AddToRoleAsync(user, userRole.Name);
