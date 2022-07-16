@@ -36,6 +36,7 @@ namespace Application.Handlers.Users
                 }
 
                 result.FullName = request.FullName;
+                result.UserName = request.UserName;
                 var editUser = await _userManager.UpdateAsync(result);
                 response = new Response<UserResponse>()
                 {
