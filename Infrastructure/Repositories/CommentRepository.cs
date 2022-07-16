@@ -14,9 +14,9 @@ namespace Infrastructure.Repositories
         public CommentRepository(AcademicBlogContext context) : base(context) { }
 
         public async Task<IEnumerable<Comment>> GetAllReply(int id)
-            => await _context.Set<Comment>().AsQueryable().AsNoTracking().Where(r=>r.ReferenceId == id).ToListAsync();
+            => await _context.Set<Comment>().AsQueryable().AsNoTracking().Include(r=>r.User).Where(r=>r.ReferenceId == id).ToListAsync();
 
         public async Task<IEnumerable<Comment>> GetAllCommentFromPost(int id) => 
-            await _context.Set<Comment>().AsQueryable().AsNoTracking().Where(r => r.BlogId == id && r.ReferenceId == null).ToListAsync();
+            await _context.Set<Comment>().AsQueryable().AsNoTracking().Include(r => r.User).Where(r => r.BlogId == id && r.ReferenceId == null).ToListAsync();
     }
 }

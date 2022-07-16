@@ -18,5 +18,8 @@ namespace Core.Repositories
             string includeProperties = "",
             bool isDelete = false);
         Task<User> GetByIdAsync(string id, bool isDeleted = false);
+
+        Task UpdateUserStatus(User entity);
+
     }
 }

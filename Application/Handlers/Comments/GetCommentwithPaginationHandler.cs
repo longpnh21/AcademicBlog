@@ -18,10 +18,12 @@ namespace Application.Handlers.Comments
     public class GetCommentWithPaginationHandler : IRequestHandler<GetCommentWithPaginationQuery, Response<PaginatedList<CommentResponse>>>
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IUserRepository _userRepository;
 
-        public GetCommentWithPaginationHandler(ICommentRepository CommentRepository)
+        public GetCommentWithPaginationHandler(ICommentRepository CommentRepository, IUserRepository UserRepository)
         {
             _commentRepository = CommentRepository;
+            _userRepository = UserRepository;
         }
 
         public async Task<Response<PaginatedList<CommentResponse>>> Handle(GetCommentWithPaginationQuery request, CancellationToken cancellationToken)
@@ -36,6 +38,8 @@ namespace Application.Handlers.Comments
 
                 foreach (CommentResponse comment in mappedResult)
                 {
+                    var UserComment = await _userRepository.GetByIdAsync(comment.UserId);
+                    comment.User = AcademicBlogMapper.Mapper.Map<UserResponse>(UserComment);
                     var replyResult = await _commentRepository.GetAllReply(comment.Id);
                     comment.Reply = AcademicBlogMapper.Mapper.Map<IEnumerable<Comment>, IEnumerable<ReplyResponse>>(replyResult);
                 }

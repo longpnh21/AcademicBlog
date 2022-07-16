@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace Application.Handlers.Users
 {
-    public class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Response<UserResponse>>
+    public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, Response<UserResponse>>
     {
         private readonly IUserRepository _userRepository;
 
-        public DeleteUserCommandHandler(IUserRepository userRepository)
+        public DeleteUserHandler(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

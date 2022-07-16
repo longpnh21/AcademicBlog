@@ -57,5 +57,13 @@ namespace Infrastructure.Repositories
             _context.Set<User>().Update(entity);
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateUserStatus(User entity)
+        {
+            entity.IsDeleted = false;
+            _context.Set<User>().Update(entity);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
