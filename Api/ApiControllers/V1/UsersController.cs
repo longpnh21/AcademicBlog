@@ -161,42 +161,6 @@ namespace Api.ApiControllers.V1
         }
 
         // PUT api/Tags/5
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> ChangeUserName(string id, [FromBody] ChangeUserNameCommand command)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest();
-                }
-
-                if (!command.Id.Equals(id))
-                {
-                    var response = new Response<TagResponse>("The Id do not match")
-                    {
-                        StatusCode = HttpStatusCode.BadRequest
-                    };
-                    return StatusCode((int)response.StatusCode, response);
-                }
-                var result = await Mediator.Send(command);
-                return StatusCode((int)result.StatusCode, result);
-            }
-            catch (Exception ex)
-            {
-                var response = new Response<TagResponse>(ex.Message)
-                {
-                    StatusCode = HttpStatusCode.InternalServerError
-                };
-                return StatusCode((int)response.StatusCode, response);
-            }
-        }
-
-        // PUT api/Tags/5
         [HttpPut("RevertDelete/{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
