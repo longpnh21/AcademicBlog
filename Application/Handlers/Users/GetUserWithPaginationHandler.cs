@@ -34,7 +34,7 @@ namespace Application.Handlers.Users
                 {
                     filter.Add(e => e.Email.Contains(request.SearchValue) || e.FullName.Contains(request.SearchValue));
                 }
-                var result = await _userRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, isDelete: request.IsDeleted);
+                var result = await _userRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter ,isDelete: request.IsDeleted);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<User>, PaginatedList<UserResponse>>(result);
 
                 response = new Response<PaginatedList<UserResponse>>(mappedResult)

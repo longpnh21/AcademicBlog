@@ -5,6 +5,7 @@ using Infrastructure.Data;
 using Infrastructure.Repositories.Base;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace Infrastructure.Repositories
         public virtual async Task<PaginatedList<User>> GetWithPaginationAsync(
             int pageIndex = 1,
             int pageSize = 50,
-            Expression<Func<User, bool>> filter = null,
+            List<Expression<Func<User, bool>>> filter = null,
             Func<IQueryable<User>, IOrderedQueryable<User>> orderBy = null,
             string includeProperties = "",
             bool isDelete = false)
@@ -30,7 +31,10 @@ namespace Infrastructure.Repositories
             }
             if (filter is not null)
             {
-                query = query.Where(filter);
+                foreach (var exp in filter)
+                {
+                    query = query.Where(exp);
+                }
             }
 
             foreach (string includeProperty in includeProperties.Split
