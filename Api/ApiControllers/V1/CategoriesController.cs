@@ -2,6 +2,7 @@
 using Application.Queries.Categories;
 using Application.Response;
 using Application.Response.Base;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,6 +13,7 @@ namespace Api.ApiControllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize]
     public class CategoriesController : ApiControllerBase
     {
         // GET: api/Categorys
