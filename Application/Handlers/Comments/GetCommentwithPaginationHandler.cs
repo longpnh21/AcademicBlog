@@ -8,6 +8,7 @@ using Core.Repositories;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,10 +18,12 @@ namespace Application.Handlers.Comments
     public class GetCommentWithPaginationHandler : IRequestHandler<GetCommentWithPaginationQuery, Response<PaginatedList<CommentResponse>>>
     {
         private readonly ICommentRepository _commentRepository;
+        private readonly IUserRepository _userRepository;
 
-        public GetCommentWithPaginationHandler(ICommentRepository CommentRepository)
+        public GetCommentWithPaginationHandler(ICommentRepository CommentRepository, IUserRepository UserRepository)
         {
             _commentRepository = CommentRepository;
+            _userRepository = UserRepository;
         }
 
         public async Task<Response<PaginatedList<CommentResponse>>> Handle(GetCommentWithPaginationQuery request, CancellationToken cancellationToken)
@@ -28,15 +31,19 @@ namespace Application.Handlers.Comments
             var response = new Response<PaginatedList<CommentResponse>>();
             try
             {
-                var result = await _commentRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, c => c.ReferenceId == null);
+                var filter = new List<Expression<Func<Comment, bool>>>();
+                filter.Add(e => e.ReferenceId == null);
+                var result = await _commentRepository.GetWithPaginationAsync(request.PageIndex, request.PageSize, filter: filter);
                 var mappedResult = AcademicBlogMapper.Mapper.Map<PaginatedList<Comment>, PaginatedList<CommentResponse>>(result);
 
                 foreach (CommentResponse comment in mappedResult)
                 {
+                    var UserComment = await _userRepository.GetByIdAsync(comment.UserId);
+                    comment.User = AcademicBlogMapper.Mapper.Map<UserResponse>(UserComment);
                     var replyResult = await _commentRepository.GetAllReply(comment.Id);
                     comment.Reply = AcademicBlogMapper.Mapper.Map<IEnumerable<Comment>, IEnumerable<ReplyResponse>>(replyResult);
                 }
-                
+
 
                 response = new Response<PaginatedList<CommentResponse>>(mappedResult)
                 {

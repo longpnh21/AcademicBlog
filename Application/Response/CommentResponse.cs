@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Application.Response
 {
@@ -14,5 +10,7 @@ namespace Application.Response
         public string UserId { get; set; }
         public int? ReferenceId { get; set; }
         public IEnumerable<ReplyResponse> Reply { get; set; }
+        public UserResponse User { get; set; }
+
     }
 }

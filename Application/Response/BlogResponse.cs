@@ -11,5 +11,7 @@ namespace Application.Response
         public string CreatorId { get; set; }
         public string ApproverId { get; set; }
         public IEnumerable<MediaResponse> Media { get; set; }
+        public IEnumerable<CategoryResponse> Categories { get; set; }
+        public IEnumerable<TagResponse> Tags { get; set; }
     }
 }

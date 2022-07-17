@@ -1,6 +1,6 @@
-﻿#nullable disable
+﻿using Core.Enums;
 
-using Core.Enums;
+#nullable disable
 
 namespace Core.Entities
 {

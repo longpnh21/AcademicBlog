@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AcademicBlogContext))]
-    [Migration("20220516180640_add identity")]
-    partial class addidentity
+    [Migration("20220715104410_InitDb")]
+    partial class InitDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,7 +30,6 @@ namespace Infrastructure.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ApproverId")
-                        .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
@@ -43,6 +42,11 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
+
+                    b.Property<DateTime>("ModifiedTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -89,7 +93,9 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Core.Entities.Category", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -147,8 +153,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Link")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.HasKey("Id");
 
@@ -166,8 +172,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -195,9 +201,11 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -242,6 +250,12 @@ namespace Infrastructure.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex(new[] { "NormalizedEmail" }, "EmailIndex");
+
+                    b.HasIndex(new[] { "NormalizedUserName" }, "UserNameIndex")
+                        .IsUnique()
+                        .HasFilter("([NormalizedUserName] IS NOT NULL)");
+
                     b.ToTable("Users");
                 });
 
@@ -261,7 +275,7 @@ namespace Infrastructure.Migrations
 
                     b.HasIndex("BlogId");
 
-                    b.ToTable("Vote");
+                    b.ToTable("Votes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -400,13 +414,13 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.User", "Approver")
                         .WithMany("BlogApprovers")
                         .HasForeignKey("ApproverId")
-                        .HasConstraintName("FK_Blogs_Users1")
-                        .IsRequired();
+                        .HasConstraintName("FK_Blog_Users1")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Core.Entities.User", "Creator")
                         .WithMany("BlogCreators")
                         .HasForeignKey("CreatorId")
-                        .HasConstraintName("FK_Blogs_Users")
+                        .HasConstraintName("FK_Blog_Users")
                         .IsRequired();
 
                     b.Navigation("Approver");
@@ -419,13 +433,15 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("BlogCategories")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_BlogCategories_Blogs")
+                        .HasConstraintName("FK_BlogCategory_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Category", "Category")
                         .WithMany("BlogCategories")
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_BlogCategories_Categories")
+                        .HasConstraintName("FK_BlogCategory_Category")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");
@@ -438,13 +454,15 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("BlogTags")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_BlogTags_Blogs")
+                        .HasConstraintName("FK_BlogTag_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Tag", "Tag")
                         .WithMany("BlogTags")
                         .HasForeignKey("TagId")
-                        .HasConstraintName("FK_BlogTags_Tags")
+                        .HasConstraintName("FK_BlogTag_Tag")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");
@@ -457,18 +475,20 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("Comments")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_Comments_Blogs")
+                        .HasConstraintName("FK_Comment_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.Comment", "Reference")
                         .WithMany("InverseReference")
                         .HasForeignKey("ReferenceId")
-                        .HasConstraintName("FK_Comments_Comments");
+                        .HasConstraintName("FK_Comment_Comment");
 
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
-                        .HasConstraintName("FK_Comments_Users")
+                        .HasConstraintName("FK_Comment_Users")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");
@@ -483,7 +503,8 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("Media")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_Media_Blogs")
+                        .HasConstraintName("FK_Media_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");
@@ -494,13 +515,15 @@ namespace Infrastructure.Migrations
                     b.HasOne("Core.Entities.Blog", "Blog")
                         .WithMany("Votes")
                         .HasForeignKey("BlogId")
-                        .HasConstraintName("FK_Vote_Blogs")
+                        .HasConstraintName("FK_Vote_Blog")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Core.Entities.User", "User")
                         .WithMany("Votes")
                         .HasForeignKey("UserId")
                         .HasConstraintName("FK_Vote_Users")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Blog");

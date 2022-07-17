@@ -19,28 +19,38 @@ namespace Infrastructure.Repositories.Base
             _context = context;
         }
 
-        public async Task<T> AddAsync(T entity)
+        public virtual async Task<T> AddAsync(T entity)
         {
             await _context.Set<T>().AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task DeleteAsync(T entity)
+        public virtual async Task DeleteAsync(T entity)
         {
             _context.Set<T>().Remove(entity);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(
-            Expression<Func<T, bool>> filter = null,
+        public virtual async Task DeleteAsync(IEnumerable<T> entity)
+        {
+            _context.Set<T>().RemoveRange(entity);
+            await _context.SaveChangesAsync();
+        }
+
+        public virtual async Task<IEnumerable<T>> GetAllAsync(
+            List<Expression<Func<T, bool>>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProperties = "")
         {
             var query = _context.Set<T>().AsQueryable().AsNoTracking();
-            if (filter is not null)
+
+            if (filter is not null && filter.Count() > 0)
             {
-                query = query.Where(filter);
+                foreach (var exp in filter)
+                {
+                    query = query.Where(exp);
+                }
             }
 
             foreach (string includeProperty in includeProperties.Split
@@ -57,17 +67,20 @@ namespace Infrastructure.Repositories.Base
             return await query.ToListAsync();
         }
 
-        public async Task<PaginatedList<T>> GetWithPaginationAsync(
+        public virtual async Task<PaginatedList<T>> GetWithPaginationAsync(
             int pageIndex = 1,
             int pageSize = 50,
-            Expression<Func<T, bool>> filter = null,
+            List<Expression<Func<T, bool>>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProperties = "")
         {
             var query = _context.Set<T>().AsQueryable().AsNoTracking();
             if (filter is not null)
             {
-                query = query.Where(filter);
+                foreach (var exp in filter)
+                {
+                    query = query.Where(exp);
+                }
             }
 
             foreach (string includeProperty in includeProperties.Split
@@ -84,11 +97,12 @@ namespace Infrastructure.Repositories.Base
             return await PaginatedList<T>.ToPaginatedList(query, pageIndex, pageSize);
         }
 
-        public async Task<T> GetByIdAsync(object[] id)
+        public virtual async Task<T> GetByIdAsync(object[] id)
             => await _context.Set<T>().FindAsync(id);
 
-        public async Task<T> UpdateAsync(T entity)
+        public virtual async Task<T> UpdateAsync(T entity)
         {
+            _context.Entry(entity).State = EntityState.Detached;
             _context.Set<T>().Update(entity);
             await _context.SaveChangesAsync();
             return entity;

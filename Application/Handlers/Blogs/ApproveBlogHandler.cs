@@ -2,7 +2,6 @@
 using Application.Response;
 using Application.Response.Base;
 using Core.Entities;
-using Core.Enums;
 using Core.Repositories;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -43,7 +42,7 @@ namespace Application.Handlers.Blogs
                 }
 
                 entity.ApproverId = approver.Id;
-                entity.Status = BlogStatus.Available;
+                entity.Status = request.Status;
 
                 await _blogRepository.UpdateAsync(entity);
 

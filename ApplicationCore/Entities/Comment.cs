@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -12,14 +11,9 @@ namespace Core.Entities
             InverseReference = new HashSet<Comment>();
         }
 
-        [Key]
         public int Id { get; set; }
-        [Required]
         public int BlogId { get; set; }
-        [MaxLength(1000)]
-        [Required]
         public string Content { get; set; }
-        [Required]
         public string UserId { get; set; }
         public int? ReferenceId { get; set; }
 

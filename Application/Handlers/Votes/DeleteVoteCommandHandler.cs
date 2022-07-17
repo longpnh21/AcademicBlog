@@ -4,10 +4,7 @@ using Application.Response.Base;
 using Core.Repositories;
 using MediatR;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,12 +24,12 @@ namespace Application.Handlers.Votes
             var response = new Response<VoteResponse>();
             try
             {
-                var result = await _voteRepository.GetByIdAsync(new object[] {request.BlogId});
+                var result = await _voteRepository.GetByIdAsync(new object[] { request.BlogId });
                 if (result is not null)
                 {
                     await _voteRepository.DeleteAsync(result);
                 }
-               
+
                 response = new Response<VoteResponse>()
                 {
                     StatusCode = HttpStatusCode.NoContent

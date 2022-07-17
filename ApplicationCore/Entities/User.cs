@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -17,13 +16,9 @@ namespace Core.Entities
             Votes = new HashSet<Vote>();
         }
 
-        [Required]
-        [Key]
-        [MaxLength(300)]
         public override string Id { get; set; } = Guid.NewGuid().ToString();
-
-        [MaxLength(500)]
-        public string? FullName { get; set; }
+        public bool IsDeleted { get; set; }
+        public string FullName { get; set; }
 
         public virtual ICollection<Blog> BlogApprovers { get; set; }
         public virtual ICollection<Blog> BlogCreators { get; set; }

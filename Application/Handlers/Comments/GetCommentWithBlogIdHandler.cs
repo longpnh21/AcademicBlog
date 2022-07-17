@@ -2,7 +2,6 @@
 using Application.Queries.Comments;
 using Application.Response;
 using Application.Response.Base;
-using Core.Common;
 using Core.Entities;
 using Core.Repositories;
 using MediatR;

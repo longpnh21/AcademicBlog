@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 #nullable disable
 
@@ -12,10 +11,7 @@ namespace Core.Entities
             BlogCategories = new HashSet<BlogCategory>();
         }
 
-        [Key]
         public int Id { get; set; }
-        [Required]
-        [MaxLength(100)]
         public string Name { get; set; }
 
         public virtual ICollection<BlogCategory> BlogCategories { get; set; }
