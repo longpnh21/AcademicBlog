@@ -2,6 +2,8 @@
 using Application.Queries.Users;
 using Application.Response;
 using Application.Response.Base;
+using Core.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,11 +14,12 @@ namespace Api.ApiControllers.V1
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ApiControllerBase
     {
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Get([FromQuery] GetUserWithPaginationQuery query)
+        public async Task<IActionResult> GetAsync([FromQuery] GetUserWithPaginationQuery query)
         {
             try
             {
@@ -43,7 +46,7 @@ namespace Api.ApiControllers.V1
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> Post([FromBody] CreateUserCommand command)
+        public async Task<IActionResult> PostAsync([FromBody] CreateUserCommand command)
         {
             try
             {
@@ -70,7 +73,7 @@ namespace Api.ApiControllers.V1
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetByIdAsync(string id, [FromBody] EditUserCommand command)
+        public async Task<IActionResult> PutAsync(string id, [FromBody] EditUserCommand command)
         {
             try
             {
@@ -141,6 +144,13 @@ namespace Api.ApiControllers.V1
                 {
                     return BadRequest();
                 }
+
+                var user = (User)HttpContext.Items["User"];
+                if (user.Id.Equals(id))
+                {
+                    return BadRequest("You cannot delete yourself");
+                }
+
 
                 var query = new DeleteUserCommand()
                 {

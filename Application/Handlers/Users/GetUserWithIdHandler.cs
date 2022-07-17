@@ -2,9 +2,12 @@
 using Application.Queries.Users;
 using Application.Response;
 using Application.Response.Base;
+using Core.Entities;
 using Core.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,11 +17,12 @@ namespace Application.Handlers.Tags
     public class GetUserWithIdHandler : IRequestHandler<GetUserWithIdQuery, Response<UserResponse>>
     {
         private readonly IUserRepository _userRepository;
+        private readonly UserManager<User> _roleManager;
 
-        public GetUserWithIdHandler(IUserRepository userRepository)
+        public GetUserWithIdHandler(IUserRepository userRepository, UserManager<User> roleManager)
         {
             _userRepository = userRepository;
-
+            this._roleManager = roleManager;
         }
 
         public async Task<Response<UserResponse>> Handle(GetUserWithIdQuery query, CancellationToken cancellationToken)
@@ -37,6 +41,8 @@ namespace Application.Handlers.Tags
                 {
                     throw new ApplicationException("Issue with mapper");
                 }
+
+                mappedResult.Role = (await _roleManager.GetRolesAsync(result)).FirstOrDefault();
 
                 response = new Response<UserResponse>(mappedResult)
                 {
