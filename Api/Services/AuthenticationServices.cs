@@ -40,6 +40,10 @@ namespace Api.Services
                 {
                     throw new NullReferenceException("Not valid login information");
                 }
+                if (user.IsDeleted == true)
+                {
+                    throw new NullReferenceException("This user has been deleted");
+                }
 
 
                 var tokenHandler = new JwtSecurityTokenHandler();
