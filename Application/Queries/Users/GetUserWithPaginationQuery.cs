@@ -13,6 +13,6 @@ namespace Application.Queries.Users
         [Range(1, int.MaxValue)]
         public int PageSize { get; set; } = 10;
         public string SearchValue { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool? IsDeleted { get; set; }
     }
 }

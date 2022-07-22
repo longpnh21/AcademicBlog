@@ -22,12 +22,12 @@ namespace Infrastructure.Repositories
             List<Expression<Func<User, bool>>> filter = null,
             Func<IQueryable<User>, IOrderedQueryable<User>> orderBy = null,
             string includeProperties = "",
-            bool isDelete = false)
+            bool? isDelete = false)
         {
             var query = _context.Set<User>().AsQueryable().AsNoTracking();
-            if (!isDelete)
+            if (isDelete != null)
             {
-                query = query.Where(e => !e.IsDeleted);
+                query = query.Where(e => e.IsDeleted == isDelete.Value);
             }
             if (filter is not null)
             {
